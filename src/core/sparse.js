@@ -1,6 +1,8 @@
 (function(TE){
 // Matrix-free symmetric graph Laplacian + positive diagonal. Dirichlet eliminated.
 TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,initial}={})=>{
+ TE.assert(rhs.length===mesh.n&&diagonal.length===mesh.n&&rhs.every(Number.isFinite)&&diagonal.every(v=>Number.isFinite(v)&&v>=0),'Linear system coefficients/RHS must be finite with nonnegative diagonal.');
+ for(const [i,v]of fixed)TE.assert(Number.isInteger(i)&&i>=0&&i<mesh.n&&Number.isFinite(v),'Invalid fixed boundary value.');
  const n=mesh.n,idx=new Int32Array(n).fill(-1),free=[];
  for(let i=0;i<n;i++)if(!fixed.has(i)){idx[i]=free.length;free.push(i);}
  const nf=free.length,out=new Float64Array(n);for(const [i,v] of fixed)out[i]=v;
@@ -17,6 +19,7 @@ TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,init
  const multiply=v=>{const z=Float64Array.from(v,(q,i)=>D[i]*q);for(const [a,bb,g] of edges){z[a]-=g*v[bb];z[bb]-=g*v[a];}return z;};
  const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
  let Ax=multiply(x),r=Float64Array.from(b,(v,i)=>v-Ax[i]),z=Float64Array.from(r,(v,i)=>v/D[i]),p=Float64Array.from(z),rz=dot(r,z);
+ TE.assert(Number.isFinite(dot(b,b))&&Number.isFinite(dot(r,r))&&Number.isFinite(rz),'Linear system magnitudes exceed the finite numerical range.');
  const target=rtol*Math.max(Math.sqrt(dot(b,b)),1e-20);
  let iteration=0;
  for(;Math.sqrt(dot(r,r))>target&&iteration<maxIter;iteration++){
@@ -24,7 +27,7 @@ TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,init
   const a=rz/den;for(let i=0;i<nf;i++){x[i]+=a*p[i];r[i]-=a*Ap[i];}
   z=Float64Array.from(r,(v,i)=>v/D[i]);const next=dot(r,z),beta=next/rz;for(let i=0;i<nf;i++)p[i]=z[i]+beta*p[i];rz=next;
  }
- TE.assert(iteration<maxIter,'Sparse linear solver did not converge.');
+ TE.assert(iteration<maxIter&&x.every(Number.isFinite)&&r.every(Number.isFinite),'Sparse linear solver did not converge to a finite result.');
  free.forEach((node,i)=>out[node]=x[i]);return Array.from(out);
 };
 })(globalThis.TE);

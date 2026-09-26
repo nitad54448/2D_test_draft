@@ -57,7 +57,15 @@ materials in the Materials tab. Painting is disabled while the worker is running
 The grid can represent arbitrary *grid-aligned* material regions, not holes,
 unmeshed voids or curved boundaries. Each cell must have a conducting material.
 
-After changing dimensions or cell counts, click **Apply dimensions / remesh**.
+Set **Elements along x (Nx)** and **Elements along y (Ny)** in the Geometry tab.
+The total element count is **Nx × Ny**, and the node count is **(Nx+1) × (Ny+1)**.
+For example, Nx=20 and Ny=10 gives 200 elements and 231 nodes. There is no fixed
+127-element count. **Time steps per period** is a separate temporal setting.
+
+After changing dimensions or element counts, click **Apply mesh** to update the
+preview immediately. **Run simulation** and **Export model** also apply pending
+mesh changes automatically. The live summary shows pending and applied counts.
+Mesh controls are disabled during a running calculation; use Stop before editing.
 Remeshing resamples the old cell map by cell-center location. Inspect small regions
 after remeshing; they can disappear on a coarse grid. All interfaces follow grid
 lines. Electrode endpoints are resolved on boundary nodes and effectively snap
@@ -79,6 +87,34 @@ The JS material class also accepts functions of T or serialized `linear` and
 `inverseLinear` descriptors. Custom functions must be defined in source; they
 cannot be transferred through worker messages. The GUI imports scalar reference
 properties and its built-in linear laws; it does not evaluate text as code.
+
+## Input validation
+
+Invalid fields are highlighted immediately with an error summary. Apply mesh,
+Run simulation and Export model remain disabled until the inputs are corrected.
+Values are not silently clamped. The same validation runs for JSON imports and
+inside the worker before computation.
+
+| Input | Accepted values |
+|---|---|
+| Width, height, out-of-plane depth | Finite and strictly greater than zero |
+| Density, heat capacity, thermal/electrical conductivity | Finite and strictly positive |
+| Imposed/ambient absolute temperature | Above 0 K throughout the cycle: DC > absolute AC peak |
+| Convection coefficient h | Finite and nonnegative; zero means no convection |
+| Current, voltage, heat flux, Seebeck coefficient and slopes | Either sign, but finite |
+| Frequency | Positive for periodic runs; nonnegative in steady mode |
+| Nx, Ny | Integers of at least 2; at most 1600 total nodes |
+| Steps per cycle | Integer 32–2048 through the API; GUI choices 64–1024 |
+| Maximum cycles | Integer 3–1000 |
+| Electrode ranges | 0 ≤ start < end ≤ 100%, at least two covered nodes, no overlap |
+
+Prescribed temperature waveforms must agree at shared corners. Steady runs need
+an imposed temperature or nonzero convection. Material maps must match the mesh
+and reference existing materials. Temperature-dependent laws are checked at 300 K,
+at prescribed temperature extremes, and again at temperatures reached during the
+solve. Numerical overflow, underflow of cell geometry, and nonfinite computed
+fields cause an explicit failure. These checks cannot establish experimental
+validity of material laws outside their measured calibration range.
 
 ## Electrical contacts
 
@@ -234,6 +270,10 @@ coefficient. A positive sine has a negative imaginary phasor.
 
 ## Export formats
 
+Numeric input fields display at most 10 significant digits and remove binary
+floating-point artifacts such as 0.19999999999. Unchanged fields retain their full
+stored numerical value; exports and calculations retain full precision.
+
 Export model: JSON configuration. Export results: configuration, mesh coordinates,
 full histories, terminal quantities and complex harmonic arrays. Spectrum CSV
 contains terminal-voltage DC/1ω/2ω/3ω amplitude, phase, real and imaginary values.
@@ -261,12 +301,14 @@ local semi-discrete thermal balance diagnostic, not a temperature-error estimate
 | `src/index.template.html` | Five-tab layout |
 | `src/styles.css` | Responsive styles |
 | `src/app.js` | Controls, painting, canvas maps, plots, exports |
+| `src/ui-helpers.js` | Precision-preserving display formatting and validated remeshing |
 | `src/worker.js` | Background execution |
 | `src/core/materials.js` | Material laws, adapted from the 1D version |
 | `src/core/mesh2d.js` | Nodal grid, material cells, conservative links, boundary measures |
 | `src/core/sparse.js` | Matrix-free graph solves with Dirichlet elimination |
 | `src/core/solver2d.js` | 2D electric transport, thermal balance, nonlinear and periodic solves |
 | `src/core/fourier.js` | Harmonic projection, using the same convention as the 1D version |
+| `src/core/validation.js` | Shared physical and configuration validation |
 | `src/core/config2d.js` | Serializable configuration and model construction |
 | `build.cjs` | Embeds source into the standalone index.html |
 
@@ -299,13 +341,15 @@ unrecognized numerical keys to GUI configuration expecting them to be used.
 Run:
 
 ```bash
-node --test tests/solver.test.cjs tests/worker.test.cjs
+node --test tests/solver.test.cjs tests/worker.test.cjs tests/ui-helpers.test.cjs tests/validation.test.cjs
 ```
 
-24 numerical/packaging/worker tests pass. They include analytical 2D solutions,
-current spreading, circulating currents in open circuit, interface Peltier,
-Thomson, energy balances, mesh/time refinement, and agreement with the corrected
-1D solver. See `VALIDATION.md` and `validation.txt`.
+All 49 automated tests passed on this package: 21 numerical tests, three packaging/
+worker checks, five precision/remeshing checks and 20 input-validation checks.
+They cover analytical 2D solutions, current spreading, circulating currents in
+open circuit, interface Peltier, Thomson, energy balances, mesh/time refinement,
+agreement with the corrected 1D solver, and rejection of invalid configurations.
+See `VALIDATION.md` and `validation.txt`.
 
 Full visual/click browser testing was not executed here because no browser binary
 was available. The exact embedded worker source was tested with Node workers,

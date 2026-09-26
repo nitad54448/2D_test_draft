@@ -2,8 +2,9 @@
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let config=TE.default2D(),selected=0,result=null,worker=null,probe=0,started=0,paint=false,geomFrame=null,resultFrame=null;
 const fmt=v=>Math.abs(v)>1e4||(v!==0&&Math.abs(v)<.001)?v.toExponential(3):Number(v.toPrecision(5)).toString();
-const amp=z=>Math.hypot(z.re,z.im),phase=z=>Math.atan2(z.im,z.re)*180/Math.PI,num=id=>{const e=$(id);TE.assert(e.value.trim()!=='',`${id}: value required.`);return TE.finite(Number(e.value),id);};
-function input(label,key,value,unit=''){return `<label>${label}<span>${unit}</span><input data-key="${key}" type="number" step="any" value="${esc(value)}"></label>`;}
+const amp=z=>Math.hypot(z.re,z.im),phase=z=>Math.atan2(z.im,z.re)*180/Math.PI,num=id=>{const e=$(id);TE.assert(e.value.trim()!=='',`${id}: value required.`);return TE.readNumberInput(e);};
+function numberAttrs(value){return `value="${esc(TE.formatInputNumber(value))}" data-raw-number="${esc(value)}" data-display-number="${esc(TE.formatInputNumber(value))}"`;}
+function input(label,key,value,unit=''){return `<label>${label}<span>${unit}</span><input data-key="${key}" type="number" step="any" required ${['rho','Cp','k','sigma','h'].includes(key)?'min="0"':''} ${numberAttrs(value)}></label>`;}
 function notice(text,error=false){$('status').textContent=text;$('badge').textContent=error?'ERROR':'READY';$('badge').className=error?'error':'';}
 function dirty(){if(worker)return;$('badge').textContent=result?'INPUTS CHANGED':'READY';$('badge').className='';$('exportResults').disabled=true;$('exportCsv').disabled=true;if(result)$('status').textContent='Inputs changed. Run again to update the displayed result.';}
 function tab(name){document.querySelectorAll('[role=tab]').forEach(t=>{const active=t.dataset.tab===name;t.setAttribute('aria-selected',active);t.tabIndex=active?0:-1;});document.querySelectorAll('[role=tabpanel]').forEach(p=>p.hidden=p.id!==name);requestAnimationFrame(()=>{if(name==='geometry')drawGeometry();if(name==='results')drawResults();});}
@@ -13,15 +14,15 @@ function materialsForm(){
 }
 function palette(){$('palette').innerHTML=config.materials.map((m,i)=>`<button class="swatch ${i===selected?'active':''}" data-select="${i}" style="--swatch:${m.color}"><i></i>${esc(m.name)}</button>`).join('');}
 function boundaryForm(){
- $('electrodes').innerHTML=['source','sink'].map(name=>{const e=config.electrical;return `<div class="electrode"><h3>${name.toUpperCase()} ELECTRODE</h3><div class="grid3"><label>Side<select id="${name}Side">${['left','right','bottom','top'].map(side=>`<option ${side===e[name+'Side']?'selected':''}>${side}</option>`).join('')}</select></label><label>Range start <span>%</span><input id="${name}Start" type="number" value="${100*e[name+'Range'][0]}" min="0" max="100"></label><label>Range end <span>%</span><input id="${name}End" type="number" value="${100*e[name+'Range'][1]}" min="0" max="100"></label></div></div>`;}).join('');
+ $('electrodes').innerHTML=['source','sink'].map(name=>{const e=config.electrical;return `<div class="electrode"><h3>${name.toUpperCase()} ELECTRODE</h3><div class="grid3"><label>Side<select id="${name}Side">${['left','right','bottom','top'].map(side=>`<option ${side===e[name+'Side']?'selected':''}>${side}</option>`).join('')}</select></label><label>Range start <span>%</span><input id="${name}Start" type="number" ${numberAttrs(100*e[name+'Range'][0])} min="0" max="100"></label><label>Range end <span>%</span><input id="${name}End" type="number" ${numberAttrs(100*e[name+'Range'][1])} min="0" max="100"></label></div></div>`;}).join('');
  $('thermalCards').innerHTML=Object.entries(config.thermal).map(([side,b])=>`<div class="thermal-card" data-side="${side}"><h3>${side.toUpperCase()}</h3><label>Condition<select data-key="kind">${['temperature','flux','convection'].map(k=>`<option value="${k}" ${b.kind===k?'selected':''}>${{temperature:'Temperature · K',flux:'Outward total flux · W/m²',convection:'Convection · ambient K'}[k]}</option>`).join('')}</select></label><div class="grid3">${input('DC value','bias',typeof b.value==='number'?b.value:b.value.bias??0)}${input('AC peak','amplitude',typeof b.value==='number'?0:b.value.amplitude??0)}${input('Convection h','h',b.h??0)}</div></div>`).join('');
 }
 function fill(){materialsForm();boundaryForm();const v=config.electrical.value;
- for(const [id,value]of Object.entries({lx:config.lx*1000,ly:config.ly*1000,depth:config.depth*1000,nx:config.nx,ny:config.ny,electricalKind:config.electrical.kind,bias:typeof v==='number'?v:v.bias??0,amplitude:typeof v==='number'?0:v.amplitude??0,phase:typeof v==='number'?0:v.phase??0,mode:config.mode,frequency:config.frequency,samples:config.samples,maxPeriods:config.maxPeriods}))$(id).value=value;
- modes();drawGeometry();}
+ for(const [id,value]of Object.entries({lx:config.lx*1000,ly:config.ly*1000,depth:config.depth*1000,nx:config.nx,ny:config.ny,electricalKind:config.electrical.kind,bias:typeof v==='number'?v:v.bias??0,amplitude:typeof v==='number'?0:v.amplitude??0,phase:typeof v==='number'?0:v.phase??0,mode:config.mode,frequency:config.frequency,samples:config.samples,maxPeriods:config.maxPeriods})){if($(id).type==='number')TE.setNumberInput($(id),value);else $(id).value=value;}
+ modes();drawGeometry();meshPreview();validateUI();}
 function read(){const c=JSON.parse(JSON.stringify(config));
- c.materials=[...document.querySelectorAll('[data-material]')].map(card=>{const m={};card.querySelectorAll('[data-key]').forEach(e=>{TE.assert(e.value.trim()!=='','Complete material fields.');m[e.dataset.key]=['name','color'].includes(e.dataset.key)?e.value:TE.finite(Number(e.value),e.dataset.key);});m.alpha/=1e6;m.alphaSlope/=1e6;return m;});
- for(const card of document.querySelectorAll('[data-side]')){const v={};card.querySelectorAll('[data-key]').forEach(e=>{TE.assert(e.value.trim()!=='','Complete thermal fields.');v[e.dataset.key]=e.dataset.key==='kind'?e.value:Number(e.value);});c.thermal[card.dataset.side]={kind:v.kind,value:{bias:v.bias,amplitude:v.amplitude},h:v.h};}
+ c.materials=[...document.querySelectorAll('[data-material]')].map(card=>{const m={};card.querySelectorAll('[data-key]').forEach(e=>{TE.assert(e.value.trim()!=='','Complete material fields.');m[e.dataset.key]=['name','color'].includes(e.dataset.key)?e.value:TE.readNumberInput(e);});m.alpha/=1e6;m.alphaSlope/=1e6;return m;});
+ for(const card of document.querySelectorAll('[data-side]')){const v={};card.querySelectorAll('[data-key]').forEach(e=>{TE.assert(e.value.trim()!=='','Complete thermal fields.');v[e.dataset.key]=e.dataset.key==='kind'?e.value:TE.readNumberInput(e);});c.thermal[card.dataset.side]={kind:v.kind,value:{bias:v.bias,amplitude:v.amplitude},h:v.h};}
  c.electrical={kind:$('electricalKind').value,value:{bias:num('bias'),amplitude:num('amplitude'),phase:num('phase')}};
  for(const name of ['source','sink']){c.electrical[name+'Side']=$(name+'Side').value;c.electrical[name+'Range']=[num(name+'Start')/100,num(name+'End')/100];}
  c.mode=$('mode').value;c.frequency=num('frequency');c.samples=num('samples');c.maxPeriods=num('maxPeriods');return c;
@@ -33,14 +34,49 @@ function canvasFrame(id,c){const canvas=$(id),width=canvas.clientWidth||700,heig
  ctx.fillStyle='#839aa9';ctx.font='10px monospace';ctx.textAlign='center';for(let i=0;i<=4;i++){ctx.fillText(fmt(c.lx*1000*i/4),left+w*i/4,top+h+19);ctx.textAlign='right';ctx.fillText(fmt(c.ly*1000*i/4),left-9,top+h-h*i/4+3);ctx.textAlign='center';}ctx.fillText('x · mm',left+w/2,top+h+37);ctx.textAlign='left';ctx.fillText('y · mm',left-25,top-9);return {ctx,left,top,w,h};}
 function contacts(frame,c){const{ctx,left,top,w,h}=frame;ctx.lineWidth=5;for(const name of ['source','sink']){const side=c.electrical[name+'Side'],range=c.electrical[name+'Range'],count=['left','right'].includes(side)?c.ny:c.nx,start=Math.ceil(range[0]*count-1e-10)/count,end=Math.floor(range[1]*count+1e-10)/count;ctx.strokeStyle=name==='source'?'#ffffff':'#e47cd3';ctx.beginPath();if(side==='left'||side==='right'){const x=left+(side==='right'?w:0);ctx.moveTo(x,top+h*(1-start));ctx.lineTo(x,top+h*(1-end));}else{const y=top+(side==='bottom'?h:0);ctx.moveTo(left+w*start,y);ctx.lineTo(left+w*end,y);}ctx.stroke();}ctx.lineWidth=1;}
 function drawGeometry(){if($('geometry').hidden)return;const c=config,f=canvasFrame('geometryCanvas',c);geomFrame=f;const{ctx,left,top,w,h}=f;
- for(let j=0;j<c.ny;j++)for(let i=0;i<c.nx;i++){ctx.fillStyle=c.materials[c.materialMap[j*c.nx+i]]?.color||'#aaa';ctx.globalAlpha=.75;ctx.fillRect(left+i*w/c.nx,top+(c.ny-1-j)*h/c.ny,w/c.nx,h/c.ny);ctx.globalAlpha=1;ctx.strokeStyle='#0b141d';ctx.strokeRect(left+i*w/c.nx,top+(c.ny-1-j)*h/c.ny,w/c.nx,h/c.ny);}contacts(f,c);$('gridInfo').textContent=`${c.nx} × ${c.ny} cells · ${(c.nx+1)*(c.ny+1)} nodes`;}
+ for(let j=0;j<c.ny;j++)for(let i=0;i<c.nx;i++){ctx.fillStyle=c.materials[c.materialMap[j*c.nx+i]]?.color||'#aaa';ctx.globalAlpha=.75;ctx.fillRect(left+i*w/c.nx,top+(c.ny-1-j)*h/c.ny,w/c.nx,h/c.ny);ctx.globalAlpha=1;ctx.strokeStyle='#0b141d';ctx.strokeRect(left+i*w/c.nx,top+(c.ny-1-j)*h/c.ny,w/c.nx,h/c.ny);}contacts(f,c);$('gridInfo').textContent=`${c.nx} × ${c.ny} = ${c.nx*c.ny} elements · ${(c.nx+1)*(c.ny+1)} nodes`;}
 function paintAt(e){if(worker||!geomFrame)return;const rect=$('geometryCanvas').getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top,f=geomFrame;if(x<f.left||x>=f.left+f.w||y<f.top||y>=f.top+f.h)return;
  const i=Math.floor((x-f.left)/f.w*config.nx),j=config.ny-1-Math.floor((y-f.top)/f.h*config.ny);config.materialMap[j*config.nx+i]=selected;drawGeometry();dirty();}
 $('geometryCanvas').onpointerdown=e=>{paint=true;$('geometryCanvas').setPointerCapture(e.pointerId);paintAt(e);};$('geometryCanvas').onpointermove=e=>{if(paint)paintAt(e);};$('geometryCanvas').onpointerup=()=>paint=false;$('geometryCanvas').onpointercancel=()=>paint=false;
 $('palette').onclick=e=>{const b=e.target.closest('[data-select]');if(b){selected=Number(b.dataset.select);palette();}};
-$('applyGrid').onclick=()=>{try{const c=read(),nx=num('nx'),ny=num('ny'),lx=num('lx')/1000,ly=num('ly')/1000,depth=num('depth')/1000;const m=new TE.Mesh2D({nx,ny,lx,ly,depth});c.materialMap=Array.from({length:nx*ny},(_,k)=>{const i=k%nx,j=Math.floor(k/nx),oi=Math.min(config.nx-1,Math.floor((i+.5)/nx*config.nx)),oj=Math.min(config.ny-1,Math.floor((j+.5)/ny*config.ny));return config.materialMap[oj*config.nx+oi];});Object.assign(c,{nx,ny,lx,ly,depth});config=c;drawGeometry();dirty();}catch(e){notice(e.message,true);}};
+function validationTargets(path){
+ const direct={lx:'lx',ly:'ly',depth:'depth',nx:'nx',ny:'ny',mode:'mode',frequency:'frequency',samples:'samples',maxPeriods:'maxPeriods','electrical.kind':'electricalKind','electrical.value.bias':'bias','electrical.value.amplitude':'amplitude','electrical.value.phase':'phase'};
+ if(direct[path])return [$(direct[path])];
+ const material=path.match(/^materials\.(\d+)\.(\w+)$/);if(material)return [...document.querySelectorAll(`[data-material="${material[1]}"] [data-key="${material[2]}"]`)];
+ const thermal=path.match(/^thermal\.(left|right|top|bottom)\.(?:value\.)?(\w+)$/);if(thermal)return [...document.querySelectorAll(`[data-side="${thermal[1]}"] [data-key="${thermal[2]}"]`)];
+ const electrode=path.match(/^electrical\.(source|sink)(Side|Range)$/);if(electrode)return electrode[2]==='Side'?[$(electrode[1]+'Side')]:[$(electrode[1]+'Start'),$(electrode[1]+'End')];
+ return [];
+}
+function validateUI(){
+ const controls=[...document.querySelectorAll('.settings input,.settings select')];
+ controls.forEach(e=>{e.setCustomValidity('');e.removeAttribute('aria-invalid');e.removeAttribute('title');});
+ const issues=[];
+ for(const e of controls.filter(e=>e.type==='number')){
+  try{TE.readNumberInput(e);}catch{issues.push({path:e.id||e.dataset.key,message:'Enter a finite numerical value.',elements:[e]});}
+ }
+ if(!issues.length){try{
+  let draft=read();const g=geometryInput();
+  if(Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=2&&(g.nx+1)*(g.ny+1)<=1600)draft=TE.remeshConfig(draft,{...g,lx:config.lx,ly:config.ly,depth:config.depth});
+  Object.assign(draft,g);issues.push(...TE.validate2DConfig(draft));
+ }catch(e){issues.push({path:'model',message:e.message});}}
+ for(const issue of issues)for(const e of issue.elements||validationTargets(issue.path)){if(!e)continue;e.setCustomValidity(issue.message);e.setAttribute('aria-invalid','true');e.title=issue.message;}
+ const summary=$('validationSummary');summary.hidden=!issues.length;
+ summary.innerHTML=issues.length?'<strong>Correct these inputs before applying, exporting or running:</strong><ul>'+issues.slice(0,10).map(e=>`<li><b>${esc(e.path)}</b> — ${esc(e.message)}</li>`).join('')+'</ul>'+(issues.length>10?`<small>${issues.length-10} more issue(s) are highlighted in the form.</small>`:''):'';
+ for(const id of ['run','save','applyGrid'])$(id).disabled=Boolean(worker)||issues.length>0;
+ return issues.length===0;
+}
+function geometryInput(){return {nx:num('nx'),ny:num('ny'),lx:num('lx')/1000,ly:num('ly')/1000,depth:num('depth')/1000};}
+function meshChanged(g){return g.nx!==config.nx||g.ny!==config.ny||Math.abs(g.lx-config.lx)>1e-14||Math.abs(g.ly-config.ly)>1e-14||Math.abs(g.depth-config.depth)>1e-14;}
+function meshPreview(){
+ try{const g=geometryInput(),valid=Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=2;
+  $('meshSummary').textContent=valid?`${g.nx} × ${g.ny} = ${g.nx*g.ny} elements / ${(g.nx+1)*(g.ny+1)} nodes`:'Enter whole-number element counts of at least 2.';
+  $('meshPending').textContent=valid&&(g.nx+1)*(g.ny+1)>1600?'Too large: maximum 1600 nodes.':meshChanged(g)?'Pending change — Apply mesh, Run simulation or Export model will apply it.':'Mesh is up to date.';
+ }catch{$('meshSummary').textContent='Enter valid dimensions and element counts.';$('meshPending').textContent='';}
+}
+function applyGeometry(){const c=read(),g=geometryInput(),candidate=TE.remeshConfig(c,g);TE.assertValid2DConfig(candidate);config=candidate;drawGeometry();meshPreview();validateUI();return config;}
+$('applyGrid').onclick=()=>{try{applyGeometry();dirty();$('status').textContent=`Mesh applied: ${config.nx} × ${config.ny} = ${config.nx*config.ny} elements, ${(config.nx+1)*(config.ny+1)} nodes. Inspect material regions after remeshing.`;}catch(e){notice(e.message,true);}};
 $('fill').onclick=()=>{config.materialMap.fill(selected);drawGeometry();dirty();};
-$('addMaterial').onclick=()=>{try{config=read();TE.assert(config.materials.length<12,'Maximum 12 materials.');config.materials.push({name:'New material',rho:2000,Cp:500,k:2,sigma:1e5,beta:0,alpha:0,alphaSlope:0,color:['#96a8f2','#dd88b8','#b1c47c'][config.materials.length%3]});materialsForm();dirty();}catch(e){notice(e.message,true);}};
+$('addMaterial').onclick=()=>{try{config=read();TE.assert(config.materials.length<12,'Maximum 12 materials.');config.materials.push({name:'New material',rho:2000,Cp:500,k:2,sigma:1e5,beta:0,alpha:0,alphaSlope:0,color:['#96a8f2','#dd88b8','#b1c47c'][config.materials.length%3]});materialsForm();dirty();validateUI();}catch(e){notice(e.message,true);}};
 function color(t){const stops=[[24,44,89],[36,107,153],[87,182,173],[227,193,110],[244,141,75]],u=Math.max(0,Math.min(1,t))*4,i=Math.min(3,Math.floor(u)),f=u-i;return `rgb(${stops[i].map((v,k)=>Math.round(v+(stops[i+1][k]-v)*f)).join(',')})`;}
 function chart(id,x,y,label){const el=$(id),W=el.clientWidth||450,H=210,L=65,R=15,T=20,B=38;let lo=Math.min(...y),hi=Math.max(...y);if(hi-lo<1e-12*Math.max(1,Math.abs(hi))){lo-=Math.max(1e-8,Math.abs(hi)*1e-5);hi+=Math.max(1e-8,Math.abs(hi)*1e-5);}else{const d=(hi-lo)*.12;lo-=d;hi+=d;}const X=v=>L+(v-x[0])/(x.at(-1)-x[0]||1)*(W-L-R),Y=v=>H-B-(v-lo)/(hi-lo)*(H-B-T);let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}"><text x="${L}" y="11" fill="#8299a8" font-size="9">${esc(label)}</text>`;
  for(let i=0;i<5;i++){const v=lo+(hi-lo)*i/4,xx=x[0]+(x.at(-1)-x[0])*i/4;s+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#293b49" stroke-dasharray="3 5"/><text x="${L-8}" y="${Y(v)+3}" text-anchor="end" fill="#8299a8" font-size="9">${fmt(v)}</text><text x="${X(xx)}" y="${H-18}" text-anchor="middle" fill="#8299a8" font-size="9">${fmt(xx)}</text>`;}
@@ -69,8 +105,8 @@ function accept(r){result=r;const periodic=r.method!=='steady';probe=Math.floor(
  const values=periodic?r.temperature.flat():r.temperature,lo=values.reduce((a,b)=>Math.min(a,b),Infinity),hi=values.reduce((a,b)=>Math.max(a,b),-Infinity),hs=periodic?r.harmonics.terminalVoltage:[{re:r.terminalVoltage,im:0}],v=hs[periodic?1:0];
  $('vLabel').textContent='TERMINAL VOLTAGE · '+(periodic?'1ω':'DC');$('vMetric').textContent=fmt(amp(v)*1000)+' mV';$('vPhase').textContent=phase(v).toFixed(3)+'° · peak amplitude';$('tMetric').textContent=lo.toFixed(3)+'–'+hi.toFixed(3)+' K';$('cycleMetric').textContent=periodic?r.periods+' cycles':'DC';$('errorMetric').textContent=periodic?'Normalized error '+r.periodicError.toExponential(2)+' ≤ 1':'Energy residual '+r.energyResidual.toExponential(2)+' W';
  $('spectrum').innerHTML=hs.map((z,n)=>`<tr><td>${n?n+'ω':'DC'}</td><td>${n?fmt(n*r.frequency):'0'} Hz</td><td>${amp(z).toExponential(5)}</td><td>${amp(z)>1e-16?phase(z).toFixed(3)+'°':'—'}</td><td>${z.re.toExponential(5)}</td><td>${z.im.toExponential(5)}</td></tr>`).join('');$('exportResults').disabled=false;$('exportCsv').disabled=false;tab('results');}
-function lock(value){document.querySelectorAll('.settings').forEach(e=>e.disabled=value);for(const id of ['preset','import','addMaterial','run'])$(id).disabled=value;$('cancel').hidden=!value;if(!value)modes();}
-$('run').onclick=()=>{try{TE.assert(num('nx')===config.nx&&num('ny')===config.ny&&Math.abs(num('lx')/1000-config.lx)<1e-14&&Math.abs(num('ly')/1000-config.ly)<1e-14&&Math.abs(num('depth')/1000-config.depth)<1e-14,'Apply dimensions / remesh before running.');config=read();TE.from2DConfig(config);palette();}catch(e){notice(e.message,true);return;}
+function lock(value){document.querySelectorAll('.settings').forEach(e=>e.disabled=value);for(const id of ['preset','import','addMaterial','run'])$(id).disabled=value;$('cancel').hidden=!value;if(!value){modes();validateUI();}}
+$('run').onclick=()=>{try{applyGeometry();TE.from2DConfig(config);palette();}catch(e){notice(e.message,true);return;}
  lock(true);$('exportResults').disabled=true;$('exportCsv').disabled=true;$('badge').textContent='COMPUTING';$('badge').className='';$('status').textContent='Solving coupled 2D transport…';started=performance.now();
  try{const url=URL.createObjectURL(new Blob([$('workerSource').textContent],{type:'text/javascript'}));worker=new Worker(url);URL.revokeObjectURL(url);
   worker.onmessage=({data})=>{if(data.type==='progress'){$('status').textContent=`Cycle ${data.progress.cycle}/${data.progress.maxPeriods}${data.progress.error===null?'':' · normalized error '+data.progress.error.toExponential(2)}`;$('elapsed').textContent=((performance.now()-started)/1000).toFixed(1)+' s';}
@@ -79,7 +115,7 @@ $('run').onclick=()=>{try{TE.assert(num('nx')===config.nx&&num('ny')===config.ny
  }catch(e){worker?.terminate();worker=null;lock(false);notice(e.message,true);}};
 $('cancel').onclick=()=>{worker?.terminate();worker=null;lock(false);notice('Stopped. No unfinished result was accepted.');};
 function download(name,data,type='application/json'){const url=URL.createObjectURL(new Blob([data],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-$('save').onclick=()=>{try{download('thermoelectric-2d-model.json',JSON.stringify(read(),null,2));}catch(e){notice(e.message,true);}};
+$('save').onclick=()=>{try{download('thermoelectric-2d-model.json',JSON.stringify(applyGeometry(),null,2));}catch(e){notice(e.message,true);}};
 $('exportResults').onclick=()=>{if(result)download('thermoelectric-2d-results.json',JSON.stringify(result));};
 $('exportCsv').onclick=()=>{if(!result)return;const hs=result.method==='steady'?[{re:result.terminalVoltage,im:0}]:result.harmonics.terminalVoltage;download('thermoelectric-2d-spectrum.csv',['harmonic,frequency_Hz,peak_V,phase_deg,real_V,imag_V',...hs.map((z,n)=>[n,n*(result.frequency??0),amp(z),amp(z)>1e-16?phase(z):'',z.re,z.im].join(','))].join('\n'),'text/csv');};
 $('import').onclick=()=>$('file').click();$('file').onchange=async()=>{const f=$('file').files[0];if(!f)return;try{TE.assert(f.size<2e6,'Model JSON must be <2 MB.');const c=JSON.parse(await f.text());TE.from2DConfig(c);TE.assert(c.materials.every(m=>['rho','Cp','k','sigma','alpha'].every(k=>typeof m[k]==='number')),'The editor imports scalar reference laws only.');TE.assert([64,128,256,512,1024].includes(c.samples),'Unsupported GUI step count.');TE.assert(Object.values(c.thermal).every(b=>typeof b.value==='number'||!(b.value.phase??0)),'Thermal phase requires the API.');c.materials.forEach(m=>{if(!/^#[0-9a-f]{6}$/i.test(m.color))m.color='#73d8d0';});config=c;selected=0;fill();dirty();notice('Model imported. Run to compute its response.');}catch(e){notice('Import failed: '+e.message,true);}finally{$('file').value='';}};
@@ -87,6 +123,8 @@ $('preset').onchange=()=>{config=TE.default2D();selected=0;const p=$('preset').v
  if(p==='spreading'){config.mode='steady';config.electrical.value={bias:.1,amplitude:0};config.electrical.sourceRange=[.25,.75];}
  if(['joule','nonlinear','seebeck'].includes(p)){config.nx=12;config.ny=6;config.lx=.001;config.ly=.001;config.materials=[{name:p==='seebeck'?'Thermoelectric material':'Resistive material',rho:2000,Cp:500,k:2,sigma:1e5,beta:p==='nonlinear'?.01:0,alpha:p==='seebeck'?2e-4:0,alphaSlope:0,color:'#73d8d0'}];config.materialMap=Array(config.nx*config.ny).fill(0);config.thermal.right={kind:'temperature',value:{bias:p==='seebeck'?350:300,amplitude:0},h:0};config.electrical.value.amplitude=p==='nonlinear'?.2:1;if(p==='seebeck'){config.mode='steady';config.electrical.kind='open_circuit';}}
  fill();dirty();};
-document.querySelectorAll('.settings').forEach(e=>{e.addEventListener('input',dirty);e.addEventListener('change',()=>{modes();try{config=read();palette();drawGeometry();}catch{}dirty();});});
+document.querySelectorAll('.settings').forEach(e=>{e.addEventListener('input',event=>{if(event.target.type==='number'){delete event.target.dataset.rawNumber;delete event.target.dataset.displayNumber;}dirty();meshPreview();validateUI();});e.addEventListener('change',()=>{modes();try{config=read();palette();drawGeometry();}catch{}dirty();meshPreview();validateUI();});});
+// Normalize completed numeric edits, retaining the full raw number behind the display.
+document.addEventListener('focusout',e=>{if(e.target.matches('input[type=number]')&&e.target.value.trim()!==''){try{TE.setNumberInput(e.target,TE.readNumberInput(e.target));meshPreview();validateUI();}catch{}}});
 let timer;window.addEventListener('resize',()=>{clearTimeout(timer);timer=setTimeout(()=>{drawGeometry();drawResults();},120);});fill();
 })();

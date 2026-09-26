@@ -9,6 +9,7 @@ class Mesh2D {
   this.x=[];this.y=[];this.cells=[];this.links=[];this.volumes=Array(this.n).fill(0);
   for(let j=0;j<=ny;j++)for(let i=0;i<=nx;i++){this.x.push(i*this.dx);this.y.push(j*this.dy);}
   const volume=this.dx*this.dy*depth;
+  TE.assert([volume/4,this.dx*depth/2,this.dy*depth/2].every(v=>Number.isFinite(v)&&v>0),'Dimensions produce zero or overflowing volumes/areas.');
   for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
    const a=j*(nx+1)+i,b=a+1,c=a+nx+1,d=c+1,id=j*nx+i,m=this.map[id];
    const nodes=[a,b,c,d];nodes.forEach(n=>this.volumes[n]+=volume/4);

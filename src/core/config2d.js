@@ -7,6 +7,7 @@ TE.default2D=()=>({version:1,mode:'periodic',nx:12,ny:8,lx:.002,ly:.001,depth:.0
  bottom:{kind:'flux',value:{bias:0,amplitude:0},h:1000},top:{kind:'flux',value:{bias:0,amplitude:0},h:1000}},
  electrical:{kind:'current',value:{bias:0,amplitude:.1,phase:0},sourceSide:'left',sinkSide:'right',sourceRange:[0,1],sinkRange:[0,1]}});
 TE.from2DConfig=c=>{
+ TE.assertValid2DConfig(c);
  TE.assert(['steady','periodic'].includes(c.mode),'Unknown simulation mode.');TE.assert(Array.isArray(c.materials)&&c.materials.length>0,'Define at least one material.');
  const mesh=new TE.Mesh2D({nx:c.nx,ny:c.ny,lx:c.lx,ly:c.ly,depth:c.depth,materialMap:c.materialMap});
  const materials=c.materials.map(m=>new TE.ThermoelectricMaterial({...m,sigma:typeof m.sigma==='number'?{type:'inverseLinear',value:m.sigma,slope:m.beta??0,reference:300}:m.sigma,

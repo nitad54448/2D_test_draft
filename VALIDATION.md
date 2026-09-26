@@ -1,6 +1,6 @@
 # Validation of the 2D conversion
 
-24 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
+49 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
 The tests use the same core source embedded in `index.html`.
 
 | Check | Acceptance |
@@ -86,7 +86,7 @@ npx playwright install chromium
 node tests/browser.spec.cjs
 ```
 
-That browser test is not counted among the 24 passed tests. It covers tab switching,
+That browser test is not counted among the 49 passed tests. It covers tab switching,
 a Seebeck run, a nonlinear harmonic run, result export, cancellation, page errors
 and a narrow viewport.
 
@@ -97,3 +97,34 @@ experimental validation or proof of accuracy for all parameter combinations.
 Refine grid/time resolution and verify physical property ranges for your model.
 Perfect interfaces and grid-aligned material regions are assumptions. Boundary
 contact singularities and tiny painted regions particularly need spatial refinement.
+
+
+## UI update: number formatting and editable element counts
+
+Five new focused checks passed, plus the three embedded-worker checks rerun on the
+updated HTML. Results are in `ui-fix-validation.txt`. No numerical-core changes
+were made, so the earlier solver validation remains applicable.
+
+- Decimal artifacts are rounded for display; very small nonzero signals remain visible.
+- Unchanged formatted inputs retain their full original numerical value.
+- A 20×10 remesh produces 200 elements and 231 solver nodes, retaining the layered map.
+- Dimension-only edits retain painted cell assignments and change physical dimensions.
+- Invalid edits do not mutate the original model; the 1600-node limit is checked.
+
+Full visual browser testing remains unexecuted; the optional browser test now also
+checks mesh editing and the displayed element/node counts.
+
+## Physical-input validation update
+
+The complete 49-test suite was rerun after adding shared validation and runtime
+finite-value guards. All tests passed; see `validation.txt`. The 20 new tests in
+`tests/validation.test.cjs` exercise zero/negative/nonfinite dimensions, geometry
+underflow/overflow, nonpositive material properties, temperature-waveform minima,
+convection, signed electrical/thermal signals, time and mesh counts, electrode
+coverage/overlap, shared-corner consistency, temperature-dependent laws, capacity
+and forcing overflow, solver settings, and malformed imports.
+
+The form now highlights invalid inputs and blocks Apply, Run and Export. The
+optional browser test includes depth and conductivity rejection/recovery checks;
+these browser interaction checks have not been executed here. Numerical/schema
+checks and embedded-worker tests are executed, not inferred from HTML attributes.

@@ -1,14 +1,19 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Thermoelectric Lab · 2D</title><style>:root{color-scheme:dark;--bg:#0b1118;--panel:#121c26;--line:#2a3946;--text:#e6edf2;--muted:#8e9fac;--accent:#f0ad72;--teal:#72d8ce}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}header{height:76px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 5%}.brand{display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:1.7px}.brand>span{font-size:38px;color:var(--accent)}.brand b{font-weight:450;color:var(--accent)}.brand em{font:10px monospace;border:1px solid var(--line);padding:4px 7px;border-radius:4px}.local{font:9px monospace;letter-spacing:1.5px;color:var(--muted);display:flex;align-items:center;gap:9px}.local i{width:6px;height:6px;border-radius:50%;background:var(--teal)}main{max-width:1460px;margin:auto;padding:0 5%}.hero{padding:40px 0 30px}.eyebrow{color:var(--accent);font:10px monospace;letter-spacing:2px}h1{font-size:clamp(30px,3.5vw,48px);font-weight:450;letter-spacing:-1.8px;margin:14px 0 12px}h1 span{color:var(--accent)}.hero p{color:var(--muted);margin:0}.toolbar{display:flex;justify-content:space-between;align-items:end;gap:20px;padding-bottom:20px}.preset-label{max-width:340px;flex:1;font:9px monospace;letter-spacing:1px}.toolbar-buttons{display:flex;gap:8px;flex-wrap:wrap}input,select,button{font:inherit}input,select{display:block;min-width:0;width:100%;border:1px solid #354959;border-radius:5px;background:#0d1620;color:var(--text);padding:9px 10px;margin-top:6px;font-size:12px}button{background:#1d2c39;border:1px solid #354959;border-radius:5px;padding:10px 14px;color:var(--text);font-size:11px;cursor:pointer}button:hover{background:#2c4050}button.primary{background:var(--accent);border-color:var(--accent);color:#24180e;font-weight:650}button:disabled{opacity:.4;cursor:not-allowed}button.text-button{border:0;background:none;color:var(--teal);padding-left:0}button.secondary{margin-top:20px}input:focus,select:focus,button:focus-visible,summary:focus-visible{outline:2px solid var(--teal);outline-offset:2px}.status-row{display:flex;align-items:baseline;gap:13px;padding:14px 0 23px;font-size:11px;color:var(--muted);min-height:64px}#badge{font:9px monospace;color:var(--teal);background:#142d2c;padding:5px 9px;border-radius:4px;white-space:nowrap}#badge.error{color:#ffb6ad;background:#42252a}#elapsed{margin-left:auto;white-space:nowrap}.tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:25px;gap:8px;overflow:auto}.tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;color:#6e8799;padding:16px 20px;font:10px monospace;white-space:nowrap}.tabs button span{font:13px system-ui;margin-left:9px;color:var(--muted)}.tabs button[aria-selected=true]{border-color:var(--accent);color:var(--accent)}.tabs button[aria-selected=true] span{color:var(--text)}.panel{min-height:580px}.two-col{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:22px}.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:22px;min-width:0;margin-bottom:22px}.card-head,.section-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}h2{font-size:15px;font-weight:550;margin:0 0 7px}h3{font-size:12px;margin:0 0 12px}.card-head p,.section-head p,.sub{color:var(--muted);font-size:11px;margin:0 0 12px}.card-head p{margin:0}.tag{font:10px monospace;color:var(--muted);padding:5px 8px;border:1px solid var(--line);border-radius:4px}.canvas-box{height:400px;position:relative;width:100%;background:#0d151e;border-radius:6px}.canvas-box canvas{width:100%;height:100%;display:block;touch-action:none}.palette{display:flex;gap:8px;flex-wrap:wrap;margin:17px 0 0}.swatch{display:flex;align-items:center;gap:7px;font-size:11px;padding:8px 12px}.swatch i{width:9px;height:9px;border-radius:50%;background:var(--swatch)}.swatch.active{border-color:var(--swatch);background:#273542}.legend-note{font-size:10px;color:var(--muted);margin-top:12px}.settings{border:0;margin:0;padding:0;min-width:0}label{display:block;font-size:11px;color:var(--muted)}label>span{float:right;font-size:10px;color:#6f8b9c}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:15px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:15px}.note{color:var(--muted);font-size:11px;line-height:1.8;margin-top:18px}.info-block{border-left:2px solid var(--teal);background:#13242b;padding:17px 20px;margin-top:24px;font-size:11px;color:var(--muted)}.info-block b{font-weight:500;color:var(--teal)}.info-block p{margin:8px 0 0;line-height:1.8}.material-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.material-card{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--material-color);border-radius:9px;padding:23px}.material-card .grid2{gap:12px 18px}.material-card .name-row{display:flex;gap:12px}.material-card .name-row label:first-child{flex:1}.material-card input[type=color]{height:36px;width:50px;padding:3px}.electrode,.thermal-card{margin-top:18px;padding-top:17px;border-top:1px solid var(--line)}.thermal-card h3,.electrode h3{color:var(--teal);letter-spacing:1px;font-size:10px}.thermal-card .grid3{margin-top:10px;gap:8px}.equation{font:18px/2.2 ui-monospace,monospace;color:var(--accent);margin:20px 0}.metrics{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:18px;margin-bottom:22px}.metrics article{padding:20px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}.metrics span{display:block;font:9px monospace;color:var(--muted);letter-spacing:.7px}.metrics strong{display:block;font-size:23px;font-weight:450;color:var(--accent);margin:10px 0 6px}.metrics small{font-size:10px;color:var(--muted)}.field-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.field-controls select{width:auto;font-size:11px;margin:0}.check{display:flex;align-items:center;gap:7px;font-size:10px}.check input{width:auto;margin:0}.result-box{height:450px}.empty-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#627b8d;pointer-events:none}.color-scale{display:flex;align-items:center;gap:12px;margin:16px 5% 0;font:10px monospace;color:var(--muted)}.color-scale div{flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,#182c59,#246b99,#57b6ad,#e3c16e,#f48d4b)}.color-scale small{font-size:10px}.charts{grid-template-columns:1fr 1fr}.chart{height:210px;margin-top:15px}.chart svg{width:100%;height:100%;display:block}.table-scroll{overflow:auto}table{width:100%;border-collapse:collapse;text-align:right;font:11px monospace;white-space:nowrap}th{font-size:9px;font-weight:400;color:var(--muted)}th,td{padding:13px 9px;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left;color:var(--accent)}footer{display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);padding:25px 0 35px;margin-top:35px;color:#688191;font-size:9px;letter-spacing:.8px}[hidden]{display:none!important}@media(max-width:1000px){.two-col{grid-template-columns:1fr 1fr}.tabs button{padding:14px 10px}.toolbar{align-items:start}.toolbar-buttons{justify-content:end}.canvas-box{height:340px}.field-controls{width:100%}}@media(max-width:720px){header{height:64px}.local{display:none}main{padding:0 5%}.hero{padding:30px 0 24px}.hero p{font-size:12px}.toolbar{flex-direction:column;align-items:stretch;gap:14px}.preset-label{max-width:none}.toolbar-buttons{justify-content:start}.tabs{gap:0}.tabs button{padding:13px 9px}.tabs button span{font-size:12px;margin-left:5px}.two-col,.material-cards,.charts{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr;gap:12px}.metrics article:last-child{grid-column:1/-1}.metrics strong{font-size:20px}.card{padding:17px}.canvas-box,.result-box{height:330px}.field-controls{gap:6px}.field-controls select{max-width:48%}.status-row{align-items:start;flex-wrap:wrap}.brand{font-size:10px;gap:8px}.grid3{gap:9px}footer{flex-direction:column;gap:8px}.panel{min-height:0}}
+
+.mesh-summary{margin-top:20px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:#0d1821}.mesh-summary strong{display:block;color:var(--teal);font:12px monospace}.mesh-summary small{display:block;margin-top:7px;color:var(--muted);font-size:10px;line-height:1.6}
+
+.validation-summary{border:1px solid #a8585e;border-radius:8px;background:#2c1921;color:#ffd0cc;padding:14px 18px;margin:0 0 20px;font-size:11px}.validation-summary strong{font-weight:550}.validation-summary ul{margin:8px 0 0;padding-left:18px}.validation-summary li{margin:4px 0}input[aria-invalid="true"],select[aria-invalid="true"]{border-color:#ff8e8a;background:#2a1b23;box-shadow:0 0 0 1px #ff8e8a44}
 </style></head><body>
 <header><div class="brand"><span>∿</span> THERMOELECTRIC <b>LAB</b><em>2D</em></div><div class="local"><i></i>LOCAL · OFFLINE</div></header>
 <main><section class="hero"><div class="eyebrow">SPATIAL TRANSPORT / NONLINEAR HARMONICS</div><h1>Explore the <span>second dimension.</span></h1><p>Paint materials. Position electrodes. Resolve temperature, current flow, and harmonic response.</p></section>
 <div class="toolbar"><label class="preset-label">EXAMPLE<select id="preset"><option value="layers">Cu / BiTe · layered</option><option value="spreading">Narrow contact · current spreading</option><option value="joule">Homogeneous · Joule 2ω</option><option value="nonlinear">Nonlinear resistance · 3ω</option><option value="seebeck">Open circuit · Seebeck DC</option></select></label><div class="toolbar-buttons"><button id="import">Import model</button><button id="save">Export model</button><button id="run" class="primary">Run simulation ↗</button><button id="cancel" hidden>Stop</button><input type="file" id="file" accept=".json" hidden></div></div>
 <div class="status-row"><span id="badge">READY</span><span id="status" role="status" aria-live="polite">Build your model in the tabs below, then run a simulation.</span><span id="elapsed"></span></div>
+<div id="validationSummary" class="validation-summary" role="alert" hidden></div>
 <nav class="tabs" role="tablist" aria-label="Workbench sections"><button role="tab" id="tab-geometry" aria-controls="geometry" aria-selected="true" data-tab="geometry">01 <span>Geometry</span></button><button role="tab" id="tab-materials" aria-controls="materials" aria-selected="false" tabindex="-1" data-tab="materials">02 <span>Materials</span></button><button role="tab" id="tab-boundaries" aria-controls="boundaries" aria-selected="false" tabindex="-1" data-tab="boundaries">03 <span>Boundaries</span></button><button role="tab" id="tab-solver" aria-controls="solver" aria-selected="false" tabindex="-1" data-tab="solver">04 <span>Solver</span></button><button role="tab" id="tab-results" aria-controls="results" aria-selected="false" tabindex="-1" data-tab="results">05 <span>Results</span></button></nav>
-<section id="geometry" role="tabpanel" aria-labelledby="tab-geometry" class="panel"><div class="two-col"><div class="card"><div class="card-head"><div><h2>Material domain</h2><p>Click or drag to paint cells with the selected material.</p></div><span class="tag" id="gridInfo"></span></div><div class="canvas-box"><canvas id="geometryCanvas" aria-label="Material grid, x horizontal and y vertical"></canvas></div><div id="palette" class="palette"></div><div class="legend-note">x → right · y ↑ up · grid lines define material interfaces</div></div><div class="card"><h2>Dimensions & mesh</h2><fieldset class="settings"><div class="grid2"><label>Width Lx <span>mm</span><input id="lx" type="number" step="any"></label><label>Height Ly <span>mm</span><input id="ly" type="number" step="any"></label><label>Out-of-plane depth <span>mm</span><input id="depth" type="number" step="any"></label><label>Cells in x<input id="nx" type="number" min="2" max="60"></label><label>Cells in y<input id="ny" type="number" min="2" max="60"></label></div><button id="applyGrid" class="secondary">Apply dimensions / remesh</button><button id="fill" class="text-button">Fill with selected material</button></fieldset><p class="note">Remeshing resamples the existing material map. All interfaces follow cell edges. Geometry edits are applied with the button above.</p><div class="info-block"><b>Planar 2D</b><p>The specified depth converts current density to amperes and heat flux to watts. It is constant throughout the domain.</p></div></div></div></section>
+<section id="geometry" role="tabpanel" aria-labelledby="tab-geometry" class="panel"><div class="two-col"><div class="card"><div class="card-head"><div><h2>Material domain</h2><p>Click or drag to paint cells with the selected material.</p></div><span class="tag" id="gridInfo"></span></div><div class="canvas-box"><canvas id="geometryCanvas" aria-label="Material grid, x horizontal and y vertical"></canvas></div><div id="palette" class="palette"></div><div class="legend-note">x → right · y ↑ up · grid lines define material interfaces</div></div><div class="card"><h2>Dimensions & mesh</h2><fieldset class="settings"><div class="grid2"><label>Width Lx <span>mm</span><input id="lx" type="number" step="any" min="0" required></label><label>Height Ly <span>mm</span><input id="ly" type="number" step="any" min="0" required></label><label>Out-of-plane depth <span>mm</span><input id="depth" type="number" step="any" min="0" required></label><label>Elements along x (Nx)<input id="nx" type="number" min="2" step="1"></label><label>Elements along y (Ny)<input id="ny" type="number" min="2" step="1"></label></div><div class="mesh-summary" aria-live="polite"><strong id="meshSummary"></strong><small id="meshPending"></small></div><button id="applyGrid" class="secondary">Apply mesh</button><button id="fill" class="text-button">Fill with selected material</button></fieldset><p class="note">Elements are the painted cells: total = Nx × Ny. Nodes = (Nx + 1) × (Ny + 1), with a maximum of 1600 nodes. Apply mesh updates the preview; Run simulation and Export model also apply pending changes. Inspect material regions after remeshing.</p><div class="info-block"><b>Planar 2D</b><p>The specified depth converts current density to amperes and heat flux to watts. It is constant throughout the domain.</p></div></div></div></section>
 <section id="materials" role="tabpanel" aria-labelledby="tab-materials" class="panel" hidden><div class="section-head"><div><h2>Material library</h2><p>Properties at 300 K. Each grid cell references one material.</p></div><button id="addMaterial" class="secondary">+ Add material</button></div><fieldset class="settings"><div id="materialCards" class="material-cards"></div></fieldset><div class="info-block"><b>Temperature-dependent transport</b><p>ρₑ(T) = [1 + β(T − 300)] / σ₃₀₀ &nbsp; · &nbsp; α(T) = α₃₀₀ + α′(T − 300). The solver includes Joule, Seebeck, Peltier and Thomson effects. Preset values are illustrative.</p></div></section>
 <section id="boundaries" role="tabpanel" aria-labelledby="tab-boundaries" class="panel" hidden><div class="two-col"><div class="card"><h2>Electrical electrodes</h2><p class="sub">Remaining boundary nodes are electrically insulated.</p><fieldset class="settings"><label>Control mode<select id="electricalKind"><option value="current">Total current · A</option><option value="voltage">Sink voltage · V</option><option value="open_circuit">Open circuit · net current = 0</option></select></label><div class="grid3"><label>DC bias<input id="bias" type="number" step="any"></label><label>AC peak<input id="amplitude" type="number" step="any"></label><label>Phase <span>°</span><input id="phase" type="number" step="any"></label></div><div id="electrodes"></div></fieldset><div class="info-block"><b>Equipotential contacts</b><p>The source electrode is at 0 V. In current mode, the sink voltage adjusts to deliver the specified total current. Current density is free to vary across an electrode. Electrode ranges run bottom→top on vertical edges, and left→right on horizontal edges.</p></div></div><div class="card"><h2>Thermal boundaries</h2><fieldset class="settings"><div id="thermalCards"></div></fieldset><p class="note">Flux is total heat flux, including Peltier, positive outward. Zero flux is adiabatic. Convection value is ambient temperature. Fixed-temperature sides meeting at a corner must agree.</p></div></div></section>
-<section id="solver" role="tabpanel" aria-labelledby="tab-solver" class="panel" hidden><div class="two-col"><div class="card"><h2>Simulation settings</h2><fieldset class="settings"><div class="grid2"><label>Mode<select id="mode"><option value="periodic">Periodic · DC to 3ω</option><option value="steady">Steady · DC only</option></select></label><label>Frequency <span>Hz</span><input id="frequency" type="number" step="any"></label><label>Steps per period<select id="samples"><option>64</option><option>128</option><option>256</option><option>512</option><option>1024</option></select></label><label>Maximum cycles<input id="maxPeriods" type="number" min="3" max="1000"></label></div></fieldset><p class="note">Steady mode uses only the DC biases. Start with a coarse mesh; refine the mesh and time steps to check your result, especially at 3ω.</p></div><div class="card"><h2>The numerical model</h2><div class="equation">J = −σ (∇V + α∇T)<br>∇ · J = 0<br>q = αTJ − k∇T<br>ρCp ∂T/∂t = −∇ · q − J · ∇V</div><p class="note">Conservative, grid-aligned nodal control volumes; scalar isotropic materials; perfect interfaces. Electrical and thermal systems use matrix-free conjugate gradients. Nonlinear coupling uses Picard iterations; periodic integration uses BDF2.</p><p class="note">No contact resistance, electrical capacitance, inductance, radiation, or front/back surface heat loss. The app supports up to 1600 nodes; practical compute time depends strongly on the case.</p></div></div></section>
+<section id="solver" role="tabpanel" aria-labelledby="tab-solver" class="panel" hidden><div class="two-col"><div class="card"><h2>Simulation settings</h2><fieldset class="settings"><div class="grid2"><label>Mode<select id="mode"><option value="periodic">Periodic · DC to 3ω</option><option value="steady">Steady · DC only</option></select></label><label>Frequency <span>Hz</span><input id="frequency" type="number" step="any" min="0" required></label><label>Time steps per period<select id="samples"><option>64</option><option>128</option><option>256</option><option>512</option><option>1024</option></select></label><label>Maximum cycles<input id="maxPeriods" type="number" min="3" max="1000"></label></div></fieldset><p class="note">Steady mode uses only the DC biases. Start with a coarse mesh; refine the mesh and time steps to check your result, especially at 3ω.</p></div><div class="card"><h2>The numerical model</h2><div class="equation">J = −σ (∇V + α∇T)<br>∇ · J = 0<br>q = αTJ − k∇T<br>ρCp ∂T/∂t = −∇ · q − J · ∇V</div><p class="note">Conservative, grid-aligned nodal control volumes; scalar isotropic materials; perfect interfaces. Electrical and thermal systems use matrix-free conjugate gradients. Nonlinear coupling uses Picard iterations; periodic integration uses BDF2.</p><p class="note">No contact resistance, electrical capacitance, inductance, radiation, or front/back surface heat loss. The app supports up to 1600 nodes; practical compute time depends strongly on the case.</p></div></div></section>
 <section id="results" role="tabpanel" aria-labelledby="tab-results" class="panel" hidden><div class="metrics"><article><span id="vLabel">TERMINAL VOLTAGE · 1ω</span><strong id="vMetric">—</strong><small id="vPhase">Peak amplitude</small></article><article><span>TEMPERATURE RANGE</span><strong id="tMetric">—</strong><small>Full spatial state / cycle</small></article><article><span>CONVERGENCE</span><strong id="cycleMetric">—</strong><small id="errorMetric">No result yet</small></article></div><div class="card"><div class="card-head"><div><h2>Spatial response</h2><p id="fieldCaption">Run a simulation to inspect the 2D fields.</p></div><div class="field-controls"><select id="field" aria-label="Field"><option value="temperature">Temperature</option><option value="voltage">Voltage</option><option value="J">Current density |J|</option><option value="Jx">Current density Jx</option><option value="Jy">Current density Jy</option></select><select id="harmonic" aria-label="Harmonic"><option value="0">DC</option><option value="1">1ω</option><option value="2">2ω</option><option value="3">3ω</option></select><select id="representation" aria-label="Representation"><option value="amplitude">Amplitude</option><option value="phase">Phase</option><option value="real">Real part</option></select><label class="check"><input type="checkbox" id="arrows" checked> Current arrows</label></div></div><div class="canvas-box result-box"><canvas id="resultCanvas" aria-label="Spatial result heatmap"></canvas><div id="resultEmpty" class="empty-overlay">Your 2D response will appear here.</div></div><div class="color-scale"><span id="scaleMin">—</span><div></div><span id="scaleMax">—</span><small id="scaleUnit"></small></div><div class="legend-note" id="vectorNote">Click the field to move the temperature probe. Arrows show the real current phasor at 0°.</div></div><div class="two-col charts"><div class="card"><h2>Temperature probe</h2><p id="probeLabel" class="sub">Click a location in the field above.</p><div id="probeChart" class="chart"></div></div><div class="card"><h2>Terminal voltage</h2><p class="sub">V(sink) − V(source)</p><div id="voltageChart" class="chart"></div></div></div><div class="card"><div class="card-head"><div><h2>Terminal harmonics</h2><p>Peak phasors · referenced to cos(ωt)</p></div><div class="toolbar-buttons"><button id="exportResults" disabled>Export results JSON</button><button id="exportCsv" disabled>Spectrum CSV</button></div></div><div class="table-scroll"><table><thead><tr><th>COMPONENT</th><th>FREQUENCY</th><th>|V| · V</th><th>PHASE</th><th>REAL · V</th><th>IMAG · V</th></tr></thead><tbody id="spectrum"><tr><td colspan="6">No computed result.</td></tr></tbody></table></div></div></section>
 <footer><span>THERMOELECTRIC LAB / 2D BROWSER EDITION</span><span>Local computation · Editable source · SI physics</span></footer></main>
 <script>/* SI units. No dependencies; shared by browser, worker and Node tests. */
@@ -82,6 +87,7 @@ class Mesh2D {
   this.x=[];this.y=[];this.cells=[];this.links=[];this.volumes=Array(this.n).fill(0);
   for(let j=0;j<=ny;j++)for(let i=0;i<=nx;i++){this.x.push(i*this.dx);this.y.push(j*this.dy);}
   const volume=this.dx*this.dy*depth;
+  TE.assert([volume/4,this.dx*depth/2,this.dy*depth/2].every(v=>Number.isFinite(v)&&v>0),'Dimensions produce zero or overflowing volumes/areas.');
   for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
    const a=j*(nx+1)+i,b=a+1,c=a+nx+1,d=c+1,id=j*nx+i,m=this.map[id];
    const nodes=[a,b,c,d];nodes.forEach(n=>this.volumes[n]+=volume/4);
@@ -106,6 +112,8 @@ TE.Mesh2D=Mesh2D;
 (function(TE){
 // Matrix-free symmetric graph Laplacian + positive diagonal. Dirichlet eliminated.
 TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,initial}={})=>{
+ TE.assert(rhs.length===mesh.n&&diagonal.length===mesh.n&&rhs.every(Number.isFinite)&&diagonal.every(v=>Number.isFinite(v)&&v>=0),'Linear system coefficients/RHS must be finite with nonnegative diagonal.');
+ for(const [i,v]of fixed)TE.assert(Number.isInteger(i)&&i>=0&&i<mesh.n&&Number.isFinite(v),'Invalid fixed boundary value.');
  const n=mesh.n,idx=new Int32Array(n).fill(-1),free=[];
  for(let i=0;i<n;i++)if(!fixed.has(i)){idx[i]=free.length;free.push(i);}
  const nf=free.length,out=new Float64Array(n);for(const [i,v] of fixed)out[i]=v;
@@ -122,6 +130,7 @@ TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,init
  const multiply=v=>{const z=Float64Array.from(v,(q,i)=>D[i]*q);for(const [a,bb,g] of edges){z[a]-=g*v[bb];z[bb]-=g*v[a];}return z;};
  const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
  let Ax=multiply(x),r=Float64Array.from(b,(v,i)=>v-Ax[i]),z=Float64Array.from(r,(v,i)=>v/D[i]),p=Float64Array.from(z),rz=dot(r,z);
+ TE.assert(Number.isFinite(dot(b,b))&&Number.isFinite(dot(r,r))&&Number.isFinite(rz),'Linear system magnitudes exceed the finite numerical range.');
  const target=rtol*Math.max(Math.sqrt(dot(b,b)),1e-20);
  let iteration=0;
  for(;Math.sqrt(dot(r,r))>target&&iteration<maxIter;iteration++){
@@ -129,13 +138,13 @@ TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,init
   const a=rz/den;for(let i=0;i<nf;i++){x[i]+=a*p[i];r[i]-=a*Ap[i];}
   z=Float64Array.from(r,(v,i)=>v/D[i]);const next=dot(r,z),beta=next/rz;for(let i=0;i<nf;i++)p[i]=z[i]+beta*p[i];rz=next;
  }
- TE.assert(iteration<maxIter,'Sparse linear solver did not converge.');
+ TE.assert(iteration<maxIter&&x.every(Number.isFinite)&&r.every(Number.isFinite),'Sparse linear solver did not converge to a finite result.');
  free.forEach((node,i)=>out[node]=x[i]);return Array.from(out);
 };
 })(globalThis.TE);
 
 (function(TE){
-TE.signal2D=(s,t,f)=>{if(typeof s==='number')return TE.finite(s,'Boundary');TE.assert(s&&typeof s==='object','Invalid boundary signal.');return TE.finite((s.bias??0)+(s.amplitude??0)*Math.cos(2*Math.PI*f*t+(s.phase??0)*Math.PI/180),'Boundary');};
+TE.signal2D=(s,t,f)=>{if(typeof s==='number')return TE.finite(s,'Boundary');TE.assert(s&&typeof s==='object'&&!Array.isArray(s),'Invalid boundary signal.');for(const k of ['bias','amplitude','phase'])if(s[k]!==undefined)TE.assert(typeof s[k]==='number'&&Number.isFinite(s[k]),'Boundary '+k+' must be a finite number.');return TE.finite((s.bias??0)+(s.amplitude??0)*Math.cos(2*Math.PI*f*t+((s.phase??0)%360)*Math.PI/180),'Boundary');};
 class Solver2D {
  constructor(mesh,materials,boundaries,electrical){this.mesh=mesh;this.materials=materials;this.boundaries=boundaries;this.electrical=electrical;this.frequency=0;
   mesh.map.forEach(id=>TE.assert(Number.isInteger(id)&&materials[id],'Unknown material in map.'));
@@ -149,11 +158,12 @@ class Solver2D {
   const m=this.mesh,cap=Array(m.n).fill(0);
   m.cells.forEach(c=>c.nodes.forEach(i=>{const a=this.materials[c.m];cap[i]+=a.density(T[i])*a.heatCapacity(T[i])*c.volume/4;}));
   const p=m.links.map(e=>{const a=this.materials[e.m],Ta=T[e.a],Tb=T[e.b],rho=(a.electricalResistivity(Ta)+a.electricalResistivity(Tb))/2;
-   return {g:e.A/(e.L*rho),k:e.A/e.L*(a.thermalConductivity(Ta)+a.thermalConductivity(Tb))/2,alpha:(a.seebeck(Ta)+a.seebeck(Tb))/2};});return {p,cap};
+   return {g:e.A/(e.L*rho),k:e.A/e.L*(a.thermalConductivity(Ta)+a.thermalConductivity(Tb))/2,alpha:(a.seebeck(Ta)+a.seebeck(Tb))/2};});TE.assert(cap.every(v=>Number.isFinite(v)&&v>0),'Heat capacities overflow or underflow the numerical range.');return {p,cap};
  }
  thermal(t){
   const m=this.mesh,fixed=new Map(),diag=Array(m.n).fill(0),rhs=Array(m.n).fill(0),flux=Array(m.n).fill(0);
   for(const [side,faces] of Object.entries(m.sides)){const b=this.boundaries[side],v=TE.signal2D(b.value,t,this.frequency);
+   if(b.kind==='temperature'||b.kind==='convection')TE.assert(v>0,side+' temperature must remain strictly above 0 K.');
    for(const {node,A} of faces){if(b.kind==='temperature'){TE.assert(v>0,'Temperature must be >0 K.');if(fixed.has(node))TE.assert(Math.abs(fixed.get(node)-v)<1e-8,'Conflicting temperatures at a corner. Use compatible boundary temperatures.');fixed.set(node,v);}
     if(b.kind==='flux'){rhs[node]-=v*A;flux[node]+=v*A;}
     if(b.kind==='convection'){diag[node]+=b.h*A;rhs[node]+=b.h*A*v;}
@@ -176,19 +186,24 @@ class Solver2D {
    const target=e.kind==='open_circuit'?0:TE.signal2D(e.value,t,this.frequency);
    terminalVoltage=(target-Ibase)/Iunit;V=base.map((v,i)=>v+terminalVoltage*unit[i]);
   }
-  const I=current(V);return {V,I,terminalVoltage,current:terminal(I)};
+  TE.assert(V.every(Number.isFinite),'Voltage exceeds the finite numerical range. Check excitation and material values.');
+  const I=current(V);TE.assert(I.every(Number.isFinite),'Current exceeds the finite numerical range.');return {V,I,terminalVoltage,current:terminal(I)};
  }
  balance(T,t){
   const m=this.mesh,{p,cap}=this.properties(T),elect=this.electric(T,p,t),source=Array(m.n).fill(0),q=[],work=[];
   m.links.forEach((l,k)=>{const I=elect.I[k],P=I*(elect.V[l.a]-elect.V[l.b]),pel=p[k].alpha*(T[l.a]+T[l.b])/2*I;
+   TE.assert([I,P,pel].every(Number.isFinite),'Electrical/thermal power exceeds the finite numerical range.');
    source[l.a]+=-pel+P/2;source[l.b]+=pel+P/2;q.push(pel-p[k].k*(T[l.b]-T[l.a]));work.push(P);
-  });return {p,cap,...elect,source,q,work};
+  });TE.assert([...source,...q,...work].every(Number.isFinite),'Heat balance exceeds the finite numerical range.');return {p,cap,...elect,source,q,work};
  }
  initial(T0){
   let T=T0?[...T0]:Array(this.mesh.n).fill(300);TE.assert(T.length===this.mesh.n,'T0 length mismatch.');
   for(const [i,v] of this.thermal(0).fixed)T[i]=v;this.properties(T);return T;
  }
  implicit(t,target,gammaDt,{initial,tolerance=2e-9,maxIterations=100,relaxation=.85}={}){
+  TE.assert(Number.isFinite(tolerance)&&tolerance>0,'Nonlinear tolerance must be positive.');
+  TE.assert(Number.isInteger(maxIterations)&&maxIterations>=1,'Nonlinear iteration limit must be a positive integer.');
+  TE.assert(Number.isFinite(relaxation)&&relaxation>0&&relaxation<=1,'Relaxation must satisfy 0 < value <= 1.');
   const m=this.mesh,bc=this.thermal(t);let T=[...initial],error=Infinity;
   for(const [i,v] of bc.fixed)T[i]=v;
   for(let iteration=0;iteration<maxIterations;iteration++){
@@ -219,7 +234,9 @@ class Solver2D {
  }
  solvePeriodic(frequency,{samples=128,maxPeriods=100,minPeriods=3,periodicAtol=2e-7,periodicRtol=1e-10,tolerance=2e-9,T0,onProgress=()=>{}}={}){
   TE.assert(Number.isFinite(frequency)&&frequency>0,'Frequency must be positive.');TE.assert(Number.isInteger(samples)&&samples>=32&&samples<=2048,'Use 32–2048 integer steps per period.');
-  TE.assert(Number.isInteger(maxPeriods)&&maxPeriods>=minPeriods&&minPeriods>=2,'Invalid cycle limit.');
+  TE.assert(Number.isInteger(maxPeriods)&&maxPeriods<=1000&&Number.isInteger(minPeriods)&&maxPeriods>=minPeriods&&minPeriods>=2,'Invalid cycle limit.');
+  TE.assert([periodicAtol,periodicRtol,tolerance].every(v=>Number.isFinite(v)&&v>0),'Solver tolerances must be strictly positive and finite.');
+  TE.assert(Number.isFinite(1/(frequency*samples))&&1/(frequency*samples)>0,'Unrepresentable time step.');
   this.frequency=frequency;let T=this.initial(T0),older=null,previous=null,history,cycle,error=Infinity;const dt=1/(frequency*samples);
   for(cycle=1;cycle<=maxPeriods;cycle++){
    history=[];
@@ -240,6 +257,107 @@ class Solver2D {
 TE.Solver2D=Solver2D;
 })(globalThis.TE);
 
+/* Shared validation for UI, JSON import and worker. Errors retain field paths. */
+(function(TE){
+ TE.validate2DConfig=c=>{
+  const errors=[],add=(path,message)=>errors.push({path,message});
+  const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+  const finite=(v,p)=>{if(typeof v!=='number'||!Number.isFinite(v)){add(p,'Must be a finite number.');return false;}return true;};
+  const positive=(v,p)=>{if(!finite(v,p))return false;if(v<=0){add(p,'Must be strictly positive (greater than zero).');return false;}return true;};
+  const integer=(v,p,min,max=Infinity)=>{if(!finite(v,p))return false;if(!Number.isInteger(v)||v<min||v>max){add(p,`Must be an integer from ${min}${max===Infinity?' upward':' to '+max}.`);return false;}return true;};
+  if(!object(c))return [{path:'model',message:'The model must be a JSON object.'}];
+  if(!['steady','periodic'].includes(c.mode))add('mode','Select steady or periodic mode.');
+  const periodic=c.mode==='periodic';
+  const nxOK=integer(c.nx,'nx',2),nyOK=integer(c.ny,'ny',2);
+  if(nxOK&&nyOK&&(c.nx+1)*(c.ny+1)>1600){add('nx','The mesh may contain at most 1600 nodes.');add('ny','Reduce Nx or Ny to stay at or below 1600 nodes.');}
+  const lxOK=positive(c.lx,'lx'),lyOK=positive(c.ly,'ly'),depthOK=positive(c.depth,'depth');
+  if(nxOK&&nyOK&&lxOK&&lyOK&&depthOK){const dx=c.lx/c.nx,dy=c.ly/c.ny;for(const v of [dx,dy,dx*dy*c.depth/4,dx*c.depth/2,dy*c.depth/2,c.lx*c.ly*c.depth])if(!Number.isFinite(v)||v<=0){add('depth','Dimensions produce zero or overflowing cell volumes/areas. Use numerically representable dimensions.');break;}}
+  if(finite(c.frequency,'frequency')&&(periodic?c.frequency<=0:c.frequency<0))add('frequency',periodic?'Frequency must be strictly positive for a periodic run.':'Frequency cannot be negative.');
+  const samplesOK=integer(c.samples,'samples',32,2048);
+  integer(c.maxPeriods,'maxPeriods',3,1000);
+  if(periodic&&Number.isFinite(c.frequency)&&c.frequency>0&&samplesOK){const dt=1/(c.frequency*c.samples);if(!Number.isFinite(dt)||dt<=0)add('frequency','The frequency and step count produce an unrepresentable time step.');}
+  function signal(s,path){
+   if(typeof s==='number'){finite(s,path+'.bias');return {bias:s,amplitude:0,phase:0};}
+   if(!object(s)){add(path,'Use a finite scalar or a bias/amplitude/phase object.');return null;}
+   const p={bias:s.bias??0,amplitude:s.amplitude??0,phase:s.phase??0};
+   for(const k of Object.keys(p))if(s[k]===null){add(path+'.'+k,'Null is not a number.');p[k]=NaN;}else finite(p[k],path+'.'+k);
+   if(Number.isFinite(p.bias)&&Number.isFinite(p.amplitude)&&(!Number.isFinite(p.bias+Math.abs(p.amplitude))||!Number.isFinite(p.bias-Math.abs(p.amplitude))))add(path+'.amplitude','Bias and amplitude overflow the representable signal range.');
+   return p;
+  }
+  const probeTemperatures=new Set([300]),thermalSignals={};
+  if(!object(c.thermal))add('thermal','Define all four thermal boundaries.');
+  for(const side of ['left','right','bottom','top']){
+   const b=c.thermal?.[side],p='thermal.'+side;
+   if(!object(b)){add(p,'Define this thermal boundary.');continue;}
+   if(!['temperature','flux','convection'].includes(b.kind))add(p+'.kind','Unknown thermal condition.');
+   const s=signal(b.value,p+'.value');thermalSignals[side]=s;
+   const h=b.h===undefined?0:b.h;if(finite(h,p+'.h')&&h<0)add(p+'.h','Convection h must be nonnegative.');
+   if(s&&['temperature','convection'].includes(b.kind)&&Object.values(s).every(Number.isFinite)){
+    const low=s.bias-(periodic?Math.abs(s.amplitude):0),high=s.bias+(periodic?Math.abs(s.amplitude):0);
+    if(low<=0||!Number.isFinite(high)){
+     const msg=periodic?'Temperature must stay above 0 K for the entire cycle: DC > |AC peak|.':'Absolute temperature must be strictly greater than 0 K.';
+     add(p+'.value.bias',msg);if(periodic)add(p+'.value.amplitude',msg);
+    }else{probeTemperatures.add(low);probeTemperatures.add(high);}
+   }
+  }
+  // Compare whole prescribed waveforms at shared Dirichlet corners, not only t=0.
+  for(const [a,b]of [['left','bottom'],['left','top'],['right','bottom'],['right','top']]){
+   if(c.thermal?.[a]?.kind!=='temperature'||c.thermal?.[b]?.kind!=='temperature')continue;
+   const x=thermalSignals[a],y=thermalSignals[b];if(!x||!y||![...Object.values(x),...Object.values(y)].every(Number.isFinite))continue;
+   const phasor=s=>[s.bias,periodic?s.amplitude*Math.cos((s.phase%360)*Math.PI/180):0,periodic?s.amplitude*Math.sin((s.phase%360)*Math.PI/180):0];
+   const X=phasor(x),Y=phasor(y);
+   if(X.some((v,i)=>Math.abs(v-Y[i])>1e-8)){add(`thermal.${a}.value.bias`,`Temperature waveforms conflict at the ${a}/${b} corner.`);add(`thermal.${b}.value.bias`,`Temperature waveforms conflict at the ${a}/${b} corner.`);}
+  }
+  if(c.mode==='steady'&&object(c.thermal)&&!Object.values(c.thermal).some(b=>b?.kind==='temperature'||(b?.kind==='convection'&&Number.isFinite(b.h)&&b.h>0)))add('thermal','A steady problem needs a thermal anchor: an imposed temperature or convection with h > 0.');
+  const mats=c.materials;
+  if(!Array.isArray(mats)||mats.length<1||mats.length>12)add('materials','Define between 1 and 12 materials.');
+  else mats.forEach((m,i)=>{
+   const p=`materials.${i}`;if(!object(m)){add(p,'Invalid material definition.');return;}
+   if(m.name!==undefined&&(typeof m.name!=='string'||!m.name.trim()))add(p+'.name','Material name cannot be empty.');
+   function law(value,path,isPositive){
+    if(typeof value==='number'){if(isPositive)positive(value,path);else finite(value,path);return;}
+    if(typeof value==='function')return; // Supported only through the source/API, never through JSON eval.
+    if(!object(value)||!['linear','inverseLinear'].includes(value.type)){add(path,'Use a number or a supported temperature-dependent law.');return;}
+    finite(value.value,path);if(value.slope!==undefined)finite(value.slope,path);if(value.reference!==undefined)positive(value.reference,path);
+   }
+   for(const k of ['rho','Cp','k','sigma','alpha'])law(m[k],p+'.'+k,k!=='alpha');
+   for(const k of ['beta','alphaSlope'])if(m[k]!==undefined)finite(m[k],p+'.'+k);
+   // Catch inadmissible laws at the reference, initial and prescribed extreme temperatures.
+   for(const key of ['rho','Cp','k','sigma','alpha']){
+    if(errors.some(e=>e.path===p+'.'+key))continue;
+    let prop=m[key];if(key==='sigma'&&typeof prop==='number')prop={type:'inverseLinear',value:prop,slope:m.beta??0,reference:300};
+    if(key==='alpha'&&typeof prop==='number')prop={type:'linear',value:prop,slope:m.alphaSlope??0,reference:300};
+    for(const T of probeTemperatures){try{const v=TE.law(prop,T);if(!Number.isFinite(v)||(key!=='alpha'&&v<=0))throw new Error();}catch{add(p+'.'+key,`${key} must be ${key==='alpha'?'finite':'finite and strictly positive'} at ${T.toPrecision(6)} K. Check its temperature law.`);break;}}
+   }
+   if(!errors.some(e=>e.path===p+'.rho'||e.path===p+'.Cp'))for(const T of probeTemperatures){
+    try{const capacity=TE.law(m.rho,T)*TE.law(m.Cp,T);if(!Number.isFinite(capacity)||capacity<=0)throw new Error();}catch{add(p+'.Cp','Density × heat capacity must be finite and strictly positive.');break;}
+   }
+  });
+  if(!Array.isArray(c.materialMap)||!nxOK||!nyOK||c.materialMap.length!==c.nx*c.ny)add('materialMap','Material map must have exactly Nx × Ny cells.');
+  else if(!Array.isArray(mats)||c.materialMap.some(id=>!Number.isInteger(id)||id<0||id>=mats.length))add('materialMap','Every cell must reference an existing material.');
+  const e=c.electrical,contacts={};
+  if(!object(e))add('electrical','Define the electrical contacts and control mode.');
+  else{
+   if(!['voltage','current','open_circuit'].includes(e.kind))add('electrical.kind','Unknown electrical control mode.');
+   signal(e.value,'electrical.value');
+   for(const name of ['source','sink']){
+    const side=e[name+'Side'],range=e[name+'Range'],p='electrical.'+name+'Range';
+    const sideOK=['left','right','bottom','top'].includes(side);if(!sideOK)add('electrical.'+name+'Side','Select a valid boundary side.');
+    const rangeOK=Array.isArray(range)&&range.length===2&&range.every(v=>typeof v==='number'&&Number.isFinite(v))&&range[0]>=0&&range[1]<=1&&range[0]<range[1];
+    if(!rangeOK)add(p,'Electrode range must satisfy 0% ≤ start < end ≤ 100%.');
+    if(sideOK&&rangeOK&&nxOK&&nyOK&&(c.nx+1)*(c.ny+1)<=1600){
+     const count=['left','right'].includes(side)?c.ny:c.nx,ids=[];
+     for(let k=0;k<=count;k++)if(k/count>=range[0]-1e-12&&k/count<=range[1]+1e-12)ids.push(side==='left'?k*(c.nx+1):side==='right'?k*(c.nx+1)+c.nx:side==='bottom'?k:c.ny*(c.nx+1)+k);
+     contacts[name]=ids;if(ids.length<2)add(p,'Electrode must cover at least two boundary nodes. Enlarge its range or refine the mesh.');
+    }
+   }
+   if(contacts.source&&contacts.sink){const set=new Set(contacts.source);if(contacts.sink.some(n=>set.has(n))){add('electrical.sourceRange','Source and sink electrodes overlap at a node.');add('electrical.sinkRange','Source and sink electrodes must not overlap.');}}
+  }
+  return errors;
+ };
+ TE.assertValid2DConfig=c=>{const issues=TE.validate2DConfig(c);if(issues.length){const e=new Error(issues.map(v=>`${v.path}: ${v.message}`).join('\n'));e.validationIssues=issues;throw e;}return c;};
+})(globalThis.TE);
+
 (function(TE){
 TE.default2D=()=>({version:1,mode:'periodic',nx:12,ny:8,lx:.002,ly:.001,depth:.001,frequency:2,samples:128,maxPeriods:100,
  materials:[{name:'Copper',rho:8960,Cp:385,k:400,sigma:5.8e7,beta:.0039,alpha:1.5e-6,alphaSlope:0,color:'#edaf6e'},
@@ -249,6 +367,7 @@ TE.default2D=()=>({version:1,mode:'periodic',nx:12,ny:8,lx:.002,ly:.001,depth:.0
  bottom:{kind:'flux',value:{bias:0,amplitude:0},h:1000},top:{kind:'flux',value:{bias:0,amplitude:0},h:1000}},
  electrical:{kind:'current',value:{bias:0,amplitude:.1,phase:0},sourceSide:'left',sinkSide:'right',sourceRange:[0,1],sinkRange:[0,1]}});
 TE.from2DConfig=c=>{
+ TE.assertValid2DConfig(c);
  TE.assert(['steady','periodic'].includes(c.mode),'Unknown simulation mode.');TE.assert(Array.isArray(c.materials)&&c.materials.length>0,'Define at least one material.');
  const mesh=new TE.Mesh2D({nx:c.nx,ny:c.ny,lx:c.lx,ly:c.ly,depth:c.depth,materialMap:c.materialMap});
  const materials=c.materials.map(m=>new TE.ThermoelectricMaterial({...m,sigma:typeof m.sigma==='number'?{type:'inverseLinear',value:m.sigma,slope:m.beta??0,reference:300}:m.sigma,
@@ -259,6 +378,35 @@ TE.from2DConfig=c=>{
 };
 TE.run2D=(c,progress)=>{const s=TE.from2DConfig(c),r=c.mode==='steady'?s.solveSteady():s.solvePeriodic(c.frequency,{samples:c.samples,maxPeriods:c.maxPeriods,onProgress:progress});
  return {...r,config:c,mesh:{nx:c.nx,ny:c.ny,lx:c.lx,ly:c.ly,depth:c.depth,x:s.mesh.x,y:s.mesh.y,materialMap:s.mesh.map},convention:'Peak phasors: u(t)=U0+Re(sum(Un exp(i n omega t))). Terminal voltage = V(sink)-V(source).'};};
+})(globalThis.TE);
+
+/* Presentation helpers: displayed rounding never replaces an unchanged raw value. */
+(function(TE){
+ TE.formatInputNumber=value=>{
+  if(!Number.isFinite(value))return String(value);
+  return String(Number(value.toPrecision(10)));
+ };
+ TE.setNumberInput=(element,value)=>{
+  const display=TE.formatInputNumber(value);
+  element.value=display;element.dataset.rawNumber=String(value);element.dataset.displayNumber=display;
+ };
+ TE.readNumberInput=element=>{
+  TE.assert(element.value.trim()!=='','A numerical value is required.');
+  const raw=element.dataset.rawNumber;
+  return TE.finite(Number(raw!==undefined&&element.value===element.dataset.displayNumber?raw:element.value),'Numerical value');
+ };
+ TE.remeshConfig=(config,{nx,ny,lx,ly,depth})=>{
+  // Validate before allocating or mutating the displayed model.
+  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=2,'Elements along x and y must be integers of at least 2.');
+  TE.assert((nx+1)*(ny+1)<=1600,`Requested mesh: ${nx*ny} elements, ${(nx+1)*(ny+1)} nodes. The browser limit is 1600 nodes; reduce Nx or Ny.`);
+  TE.assert([lx,ly,depth].every(v=>Number.isFinite(v)&&v>0),'Dimensions and depth must be positive.');
+  const next={...config,nx,ny,lx,ly,depth};
+  next.materialMap=Array.from({length:nx*ny},(_,k)=>{
+   const i=k%nx,j=Math.floor(k/nx),oldI=Math.min(config.nx-1,Math.floor((i+.5)/nx*config.nx)),oldJ=Math.min(config.ny-1,Math.floor((j+.5)/ny*config.ny));
+   return config.materialMap[oldJ*config.nx+oldI];
+  });
+  return next;
+ };
 })(globalThis.TE);
 </script><script id="workerSource" type="text/plain">/* SI units. No dependencies; shared by browser, worker and Node tests. */
 (function (TE) {
@@ -331,6 +479,7 @@ class Mesh2D {
   this.x=[];this.y=[];this.cells=[];this.links=[];this.volumes=Array(this.n).fill(0);
   for(let j=0;j<=ny;j++)for(let i=0;i<=nx;i++){this.x.push(i*this.dx);this.y.push(j*this.dy);}
   const volume=this.dx*this.dy*depth;
+  TE.assert([volume/4,this.dx*depth/2,this.dy*depth/2].every(v=>Number.isFinite(v)&&v>0),'Dimensions produce zero or overflowing volumes/areas.');
   for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
    const a=j*(nx+1)+i,b=a+1,c=a+nx+1,d=c+1,id=j*nx+i,m=this.map[id];
    const nodes=[a,b,c,d];nodes.forEach(n=>this.volumes[n]+=volume/4);
@@ -355,6 +504,8 @@ TE.Mesh2D=Mesh2D;
 (function(TE){
 // Matrix-free symmetric graph Laplacian + positive diagonal. Dirichlet eliminated.
 TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,initial}={})=>{
+ TE.assert(rhs.length===mesh.n&&diagonal.length===mesh.n&&rhs.every(Number.isFinite)&&diagonal.every(v=>Number.isFinite(v)&&v>=0),'Linear system coefficients/RHS must be finite with nonnegative diagonal.');
+ for(const [i,v]of fixed)TE.assert(Number.isInteger(i)&&i>=0&&i<mesh.n&&Number.isFinite(v),'Invalid fixed boundary value.');
  const n=mesh.n,idx=new Int32Array(n).fill(-1),free=[];
  for(let i=0;i<n;i++)if(!fixed.has(i)){idx[i]=free.length;free.push(i);}
  const nf=free.length,out=new Float64Array(n);for(const [i,v] of fixed)out[i]=v;
@@ -371,6 +522,7 @@ TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,init
  const multiply=v=>{const z=Float64Array.from(v,(q,i)=>D[i]*q);for(const [a,bb,g] of edges){z[a]-=g*v[bb];z[bb]-=g*v[a];}return z;};
  const dot=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
  let Ax=multiply(x),r=Float64Array.from(b,(v,i)=>v-Ax[i]),z=Float64Array.from(r,(v,i)=>v/D[i]),p=Float64Array.from(z),rz=dot(r,z);
+ TE.assert(Number.isFinite(dot(b,b))&&Number.isFinite(dot(r,r))&&Number.isFinite(rz),'Linear system magnitudes exceed the finite numerical range.');
  const target=rtol*Math.max(Math.sqrt(dot(b,b)),1e-20);
  let iteration=0;
  for(;Math.sqrt(dot(r,r))>target&&iteration<maxIter;iteration++){
@@ -378,13 +530,13 @@ TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,init
   const a=rz/den;for(let i=0;i<nf;i++){x[i]+=a*p[i];r[i]-=a*Ap[i];}
   z=Float64Array.from(r,(v,i)=>v/D[i]);const next=dot(r,z),beta=next/rz;for(let i=0;i<nf;i++)p[i]=z[i]+beta*p[i];rz=next;
  }
- TE.assert(iteration<maxIter,'Sparse linear solver did not converge.');
+ TE.assert(iteration<maxIter&&x.every(Number.isFinite)&&r.every(Number.isFinite),'Sparse linear solver did not converge to a finite result.');
  free.forEach((node,i)=>out[node]=x[i]);return Array.from(out);
 };
 })(globalThis.TE);
 
 (function(TE){
-TE.signal2D=(s,t,f)=>{if(typeof s==='number')return TE.finite(s,'Boundary');TE.assert(s&&typeof s==='object','Invalid boundary signal.');return TE.finite((s.bias??0)+(s.amplitude??0)*Math.cos(2*Math.PI*f*t+(s.phase??0)*Math.PI/180),'Boundary');};
+TE.signal2D=(s,t,f)=>{if(typeof s==='number')return TE.finite(s,'Boundary');TE.assert(s&&typeof s==='object'&&!Array.isArray(s),'Invalid boundary signal.');for(const k of ['bias','amplitude','phase'])if(s[k]!==undefined)TE.assert(typeof s[k]==='number'&&Number.isFinite(s[k]),'Boundary '+k+' must be a finite number.');return TE.finite((s.bias??0)+(s.amplitude??0)*Math.cos(2*Math.PI*f*t+((s.phase??0)%360)*Math.PI/180),'Boundary');};
 class Solver2D {
  constructor(mesh,materials,boundaries,electrical){this.mesh=mesh;this.materials=materials;this.boundaries=boundaries;this.electrical=electrical;this.frequency=0;
   mesh.map.forEach(id=>TE.assert(Number.isInteger(id)&&materials[id],'Unknown material in map.'));
@@ -398,11 +550,12 @@ class Solver2D {
   const m=this.mesh,cap=Array(m.n).fill(0);
   m.cells.forEach(c=>c.nodes.forEach(i=>{const a=this.materials[c.m];cap[i]+=a.density(T[i])*a.heatCapacity(T[i])*c.volume/4;}));
   const p=m.links.map(e=>{const a=this.materials[e.m],Ta=T[e.a],Tb=T[e.b],rho=(a.electricalResistivity(Ta)+a.electricalResistivity(Tb))/2;
-   return {g:e.A/(e.L*rho),k:e.A/e.L*(a.thermalConductivity(Ta)+a.thermalConductivity(Tb))/2,alpha:(a.seebeck(Ta)+a.seebeck(Tb))/2};});return {p,cap};
+   return {g:e.A/(e.L*rho),k:e.A/e.L*(a.thermalConductivity(Ta)+a.thermalConductivity(Tb))/2,alpha:(a.seebeck(Ta)+a.seebeck(Tb))/2};});TE.assert(cap.every(v=>Number.isFinite(v)&&v>0),'Heat capacities overflow or underflow the numerical range.');return {p,cap};
  }
  thermal(t){
   const m=this.mesh,fixed=new Map(),diag=Array(m.n).fill(0),rhs=Array(m.n).fill(0),flux=Array(m.n).fill(0);
   for(const [side,faces] of Object.entries(m.sides)){const b=this.boundaries[side],v=TE.signal2D(b.value,t,this.frequency);
+   if(b.kind==='temperature'||b.kind==='convection')TE.assert(v>0,side+' temperature must remain strictly above 0 K.');
    for(const {node,A} of faces){if(b.kind==='temperature'){TE.assert(v>0,'Temperature must be >0 K.');if(fixed.has(node))TE.assert(Math.abs(fixed.get(node)-v)<1e-8,'Conflicting temperatures at a corner. Use compatible boundary temperatures.');fixed.set(node,v);}
     if(b.kind==='flux'){rhs[node]-=v*A;flux[node]+=v*A;}
     if(b.kind==='convection'){diag[node]+=b.h*A;rhs[node]+=b.h*A*v;}
@@ -425,19 +578,24 @@ class Solver2D {
    const target=e.kind==='open_circuit'?0:TE.signal2D(e.value,t,this.frequency);
    terminalVoltage=(target-Ibase)/Iunit;V=base.map((v,i)=>v+terminalVoltage*unit[i]);
   }
-  const I=current(V);return {V,I,terminalVoltage,current:terminal(I)};
+  TE.assert(V.every(Number.isFinite),'Voltage exceeds the finite numerical range. Check excitation and material values.');
+  const I=current(V);TE.assert(I.every(Number.isFinite),'Current exceeds the finite numerical range.');return {V,I,terminalVoltage,current:terminal(I)};
  }
  balance(T,t){
   const m=this.mesh,{p,cap}=this.properties(T),elect=this.electric(T,p,t),source=Array(m.n).fill(0),q=[],work=[];
   m.links.forEach((l,k)=>{const I=elect.I[k],P=I*(elect.V[l.a]-elect.V[l.b]),pel=p[k].alpha*(T[l.a]+T[l.b])/2*I;
+   TE.assert([I,P,pel].every(Number.isFinite),'Electrical/thermal power exceeds the finite numerical range.');
    source[l.a]+=-pel+P/2;source[l.b]+=pel+P/2;q.push(pel-p[k].k*(T[l.b]-T[l.a]));work.push(P);
-  });return {p,cap,...elect,source,q,work};
+  });TE.assert([...source,...q,...work].every(Number.isFinite),'Heat balance exceeds the finite numerical range.');return {p,cap,...elect,source,q,work};
  }
  initial(T0){
   let T=T0?[...T0]:Array(this.mesh.n).fill(300);TE.assert(T.length===this.mesh.n,'T0 length mismatch.');
   for(const [i,v] of this.thermal(0).fixed)T[i]=v;this.properties(T);return T;
  }
  implicit(t,target,gammaDt,{initial,tolerance=2e-9,maxIterations=100,relaxation=.85}={}){
+  TE.assert(Number.isFinite(tolerance)&&tolerance>0,'Nonlinear tolerance must be positive.');
+  TE.assert(Number.isInteger(maxIterations)&&maxIterations>=1,'Nonlinear iteration limit must be a positive integer.');
+  TE.assert(Number.isFinite(relaxation)&&relaxation>0&&relaxation<=1,'Relaxation must satisfy 0 < value <= 1.');
   const m=this.mesh,bc=this.thermal(t);let T=[...initial],error=Infinity;
   for(const [i,v] of bc.fixed)T[i]=v;
   for(let iteration=0;iteration<maxIterations;iteration++){
@@ -468,7 +626,9 @@ class Solver2D {
  }
  solvePeriodic(frequency,{samples=128,maxPeriods=100,minPeriods=3,periodicAtol=2e-7,periodicRtol=1e-10,tolerance=2e-9,T0,onProgress=()=>{}}={}){
   TE.assert(Number.isFinite(frequency)&&frequency>0,'Frequency must be positive.');TE.assert(Number.isInteger(samples)&&samples>=32&&samples<=2048,'Use 32–2048 integer steps per period.');
-  TE.assert(Number.isInteger(maxPeriods)&&maxPeriods>=minPeriods&&minPeriods>=2,'Invalid cycle limit.');
+  TE.assert(Number.isInteger(maxPeriods)&&maxPeriods<=1000&&Number.isInteger(minPeriods)&&maxPeriods>=minPeriods&&minPeriods>=2,'Invalid cycle limit.');
+  TE.assert([periodicAtol,periodicRtol,tolerance].every(v=>Number.isFinite(v)&&v>0),'Solver tolerances must be strictly positive and finite.');
+  TE.assert(Number.isFinite(1/(frequency*samples))&&1/(frequency*samples)>0,'Unrepresentable time step.');
   this.frequency=frequency;let T=this.initial(T0),older=null,previous=null,history,cycle,error=Infinity;const dt=1/(frequency*samples);
   for(cycle=1;cycle<=maxPeriods;cycle++){
    history=[];
@@ -489,6 +649,107 @@ class Solver2D {
 TE.Solver2D=Solver2D;
 })(globalThis.TE);
 
+/* Shared validation for UI, JSON import and worker. Errors retain field paths. */
+(function(TE){
+ TE.validate2DConfig=c=>{
+  const errors=[],add=(path,message)=>errors.push({path,message});
+  const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+  const finite=(v,p)=>{if(typeof v!=='number'||!Number.isFinite(v)){add(p,'Must be a finite number.');return false;}return true;};
+  const positive=(v,p)=>{if(!finite(v,p))return false;if(v<=0){add(p,'Must be strictly positive (greater than zero).');return false;}return true;};
+  const integer=(v,p,min,max=Infinity)=>{if(!finite(v,p))return false;if(!Number.isInteger(v)||v<min||v>max){add(p,`Must be an integer from ${min}${max===Infinity?' upward':' to '+max}.`);return false;}return true;};
+  if(!object(c))return [{path:'model',message:'The model must be a JSON object.'}];
+  if(!['steady','periodic'].includes(c.mode))add('mode','Select steady or periodic mode.');
+  const periodic=c.mode==='periodic';
+  const nxOK=integer(c.nx,'nx',2),nyOK=integer(c.ny,'ny',2);
+  if(nxOK&&nyOK&&(c.nx+1)*(c.ny+1)>1600){add('nx','The mesh may contain at most 1600 nodes.');add('ny','Reduce Nx or Ny to stay at or below 1600 nodes.');}
+  const lxOK=positive(c.lx,'lx'),lyOK=positive(c.ly,'ly'),depthOK=positive(c.depth,'depth');
+  if(nxOK&&nyOK&&lxOK&&lyOK&&depthOK){const dx=c.lx/c.nx,dy=c.ly/c.ny;for(const v of [dx,dy,dx*dy*c.depth/4,dx*c.depth/2,dy*c.depth/2,c.lx*c.ly*c.depth])if(!Number.isFinite(v)||v<=0){add('depth','Dimensions produce zero or overflowing cell volumes/areas. Use numerically representable dimensions.');break;}}
+  if(finite(c.frequency,'frequency')&&(periodic?c.frequency<=0:c.frequency<0))add('frequency',periodic?'Frequency must be strictly positive for a periodic run.':'Frequency cannot be negative.');
+  const samplesOK=integer(c.samples,'samples',32,2048);
+  integer(c.maxPeriods,'maxPeriods',3,1000);
+  if(periodic&&Number.isFinite(c.frequency)&&c.frequency>0&&samplesOK){const dt=1/(c.frequency*c.samples);if(!Number.isFinite(dt)||dt<=0)add('frequency','The frequency and step count produce an unrepresentable time step.');}
+  function signal(s,path){
+   if(typeof s==='number'){finite(s,path+'.bias');return {bias:s,amplitude:0,phase:0};}
+   if(!object(s)){add(path,'Use a finite scalar or a bias/amplitude/phase object.');return null;}
+   const p={bias:s.bias??0,amplitude:s.amplitude??0,phase:s.phase??0};
+   for(const k of Object.keys(p))if(s[k]===null){add(path+'.'+k,'Null is not a number.');p[k]=NaN;}else finite(p[k],path+'.'+k);
+   if(Number.isFinite(p.bias)&&Number.isFinite(p.amplitude)&&(!Number.isFinite(p.bias+Math.abs(p.amplitude))||!Number.isFinite(p.bias-Math.abs(p.amplitude))))add(path+'.amplitude','Bias and amplitude overflow the representable signal range.');
+   return p;
+  }
+  const probeTemperatures=new Set([300]),thermalSignals={};
+  if(!object(c.thermal))add('thermal','Define all four thermal boundaries.');
+  for(const side of ['left','right','bottom','top']){
+   const b=c.thermal?.[side],p='thermal.'+side;
+   if(!object(b)){add(p,'Define this thermal boundary.');continue;}
+   if(!['temperature','flux','convection'].includes(b.kind))add(p+'.kind','Unknown thermal condition.');
+   const s=signal(b.value,p+'.value');thermalSignals[side]=s;
+   const h=b.h===undefined?0:b.h;if(finite(h,p+'.h')&&h<0)add(p+'.h','Convection h must be nonnegative.');
+   if(s&&['temperature','convection'].includes(b.kind)&&Object.values(s).every(Number.isFinite)){
+    const low=s.bias-(periodic?Math.abs(s.amplitude):0),high=s.bias+(periodic?Math.abs(s.amplitude):0);
+    if(low<=0||!Number.isFinite(high)){
+     const msg=periodic?'Temperature must stay above 0 K for the entire cycle: DC > |AC peak|.':'Absolute temperature must be strictly greater than 0 K.';
+     add(p+'.value.bias',msg);if(periodic)add(p+'.value.amplitude',msg);
+    }else{probeTemperatures.add(low);probeTemperatures.add(high);}
+   }
+  }
+  // Compare whole prescribed waveforms at shared Dirichlet corners, not only t=0.
+  for(const [a,b]of [['left','bottom'],['left','top'],['right','bottom'],['right','top']]){
+   if(c.thermal?.[a]?.kind!=='temperature'||c.thermal?.[b]?.kind!=='temperature')continue;
+   const x=thermalSignals[a],y=thermalSignals[b];if(!x||!y||![...Object.values(x),...Object.values(y)].every(Number.isFinite))continue;
+   const phasor=s=>[s.bias,periodic?s.amplitude*Math.cos((s.phase%360)*Math.PI/180):0,periodic?s.amplitude*Math.sin((s.phase%360)*Math.PI/180):0];
+   const X=phasor(x),Y=phasor(y);
+   if(X.some((v,i)=>Math.abs(v-Y[i])>1e-8)){add(`thermal.${a}.value.bias`,`Temperature waveforms conflict at the ${a}/${b} corner.`);add(`thermal.${b}.value.bias`,`Temperature waveforms conflict at the ${a}/${b} corner.`);}
+  }
+  if(c.mode==='steady'&&object(c.thermal)&&!Object.values(c.thermal).some(b=>b?.kind==='temperature'||(b?.kind==='convection'&&Number.isFinite(b.h)&&b.h>0)))add('thermal','A steady problem needs a thermal anchor: an imposed temperature or convection with h > 0.');
+  const mats=c.materials;
+  if(!Array.isArray(mats)||mats.length<1||mats.length>12)add('materials','Define between 1 and 12 materials.');
+  else mats.forEach((m,i)=>{
+   const p=`materials.${i}`;if(!object(m)){add(p,'Invalid material definition.');return;}
+   if(m.name!==undefined&&(typeof m.name!=='string'||!m.name.trim()))add(p+'.name','Material name cannot be empty.');
+   function law(value,path,isPositive){
+    if(typeof value==='number'){if(isPositive)positive(value,path);else finite(value,path);return;}
+    if(typeof value==='function')return; // Supported only through the source/API, never through JSON eval.
+    if(!object(value)||!['linear','inverseLinear'].includes(value.type)){add(path,'Use a number or a supported temperature-dependent law.');return;}
+    finite(value.value,path);if(value.slope!==undefined)finite(value.slope,path);if(value.reference!==undefined)positive(value.reference,path);
+   }
+   for(const k of ['rho','Cp','k','sigma','alpha'])law(m[k],p+'.'+k,k!=='alpha');
+   for(const k of ['beta','alphaSlope'])if(m[k]!==undefined)finite(m[k],p+'.'+k);
+   // Catch inadmissible laws at the reference, initial and prescribed extreme temperatures.
+   for(const key of ['rho','Cp','k','sigma','alpha']){
+    if(errors.some(e=>e.path===p+'.'+key))continue;
+    let prop=m[key];if(key==='sigma'&&typeof prop==='number')prop={type:'inverseLinear',value:prop,slope:m.beta??0,reference:300};
+    if(key==='alpha'&&typeof prop==='number')prop={type:'linear',value:prop,slope:m.alphaSlope??0,reference:300};
+    for(const T of probeTemperatures){try{const v=TE.law(prop,T);if(!Number.isFinite(v)||(key!=='alpha'&&v<=0))throw new Error();}catch{add(p+'.'+key,`${key} must be ${key==='alpha'?'finite':'finite and strictly positive'} at ${T.toPrecision(6)} K. Check its temperature law.`);break;}}
+   }
+   if(!errors.some(e=>e.path===p+'.rho'||e.path===p+'.Cp'))for(const T of probeTemperatures){
+    try{const capacity=TE.law(m.rho,T)*TE.law(m.Cp,T);if(!Number.isFinite(capacity)||capacity<=0)throw new Error();}catch{add(p+'.Cp','Density × heat capacity must be finite and strictly positive.');break;}
+   }
+  });
+  if(!Array.isArray(c.materialMap)||!nxOK||!nyOK||c.materialMap.length!==c.nx*c.ny)add('materialMap','Material map must have exactly Nx × Ny cells.');
+  else if(!Array.isArray(mats)||c.materialMap.some(id=>!Number.isInteger(id)||id<0||id>=mats.length))add('materialMap','Every cell must reference an existing material.');
+  const e=c.electrical,contacts={};
+  if(!object(e))add('electrical','Define the electrical contacts and control mode.');
+  else{
+   if(!['voltage','current','open_circuit'].includes(e.kind))add('electrical.kind','Unknown electrical control mode.');
+   signal(e.value,'electrical.value');
+   for(const name of ['source','sink']){
+    const side=e[name+'Side'],range=e[name+'Range'],p='electrical.'+name+'Range';
+    const sideOK=['left','right','bottom','top'].includes(side);if(!sideOK)add('electrical.'+name+'Side','Select a valid boundary side.');
+    const rangeOK=Array.isArray(range)&&range.length===2&&range.every(v=>typeof v==='number'&&Number.isFinite(v))&&range[0]>=0&&range[1]<=1&&range[0]<range[1];
+    if(!rangeOK)add(p,'Electrode range must satisfy 0% ≤ start < end ≤ 100%.');
+    if(sideOK&&rangeOK&&nxOK&&nyOK&&(c.nx+1)*(c.ny+1)<=1600){
+     const count=['left','right'].includes(side)?c.ny:c.nx,ids=[];
+     for(let k=0;k<=count;k++)if(k/count>=range[0]-1e-12&&k/count<=range[1]+1e-12)ids.push(side==='left'?k*(c.nx+1):side==='right'?k*(c.nx+1)+c.nx:side==='bottom'?k:c.ny*(c.nx+1)+k);
+     contacts[name]=ids;if(ids.length<2)add(p,'Electrode must cover at least two boundary nodes. Enlarge its range or refine the mesh.');
+    }
+   }
+   if(contacts.source&&contacts.sink){const set=new Set(contacts.source);if(contacts.sink.some(n=>set.has(n))){add('electrical.sourceRange','Source and sink electrodes overlap at a node.');add('electrical.sinkRange','Source and sink electrodes must not overlap.');}}
+  }
+  return errors;
+ };
+ TE.assertValid2DConfig=c=>{const issues=TE.validate2DConfig(c);if(issues.length){const e=new Error(issues.map(v=>`${v.path}: ${v.message}`).join('\n'));e.validationIssues=issues;throw e;}return c;};
+})(globalThis.TE);
+
 (function(TE){
 TE.default2D=()=>({version:1,mode:'periodic',nx:12,ny:8,lx:.002,ly:.001,depth:.001,frequency:2,samples:128,maxPeriods:100,
  materials:[{name:'Copper',rho:8960,Cp:385,k:400,sigma:5.8e7,beta:.0039,alpha:1.5e-6,alphaSlope:0,color:'#edaf6e'},
@@ -498,6 +759,7 @@ TE.default2D=()=>({version:1,mode:'periodic',nx:12,ny:8,lx:.002,ly:.001,depth:.0
  bottom:{kind:'flux',value:{bias:0,amplitude:0},h:1000},top:{kind:'flux',value:{bias:0,amplitude:0},h:1000}},
  electrical:{kind:'current',value:{bias:0,amplitude:.1,phase:0},sourceSide:'left',sinkSide:'right',sourceRange:[0,1],sinkRange:[0,1]}});
 TE.from2DConfig=c=>{
+ TE.assertValid2DConfig(c);
  TE.assert(['steady','periodic'].includes(c.mode),'Unknown simulation mode.');TE.assert(Array.isArray(c.materials)&&c.materials.length>0,'Define at least one material.');
  const mesh=new TE.Mesh2D({nx:c.nx,ny:c.ny,lx:c.lx,ly:c.ly,depth:c.depth,materialMap:c.materialMap});
  const materials=c.materials.map(m=>new TE.ThermoelectricMaterial({...m,sigma:typeof m.sigma==='number'?{type:'inverseLinear',value:m.sigma,slope:m.beta??0,reference:300}:m.sigma,
@@ -515,8 +777,9 @@ self.onmessage=event=>{try{const result=TE.run2D(event.data,p=>self.postMessage(
 const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let config=TE.default2D(),selected=0,result=null,worker=null,probe=0,started=0,paint=false,geomFrame=null,resultFrame=null;
 const fmt=v=>Math.abs(v)>1e4||(v!==0&&Math.abs(v)<.001)?v.toExponential(3):Number(v.toPrecision(5)).toString();
-const amp=z=>Math.hypot(z.re,z.im),phase=z=>Math.atan2(z.im,z.re)*180/Math.PI,num=id=>{const e=$(id);TE.assert(e.value.trim()!=='',`${id}: value required.`);return TE.finite(Number(e.value),id);};
-function input(label,key,value,unit=''){return `<label>${label}<span>${unit}</span><input data-key="${key}" type="number" step="any" value="${esc(value)}"></label>`;}
+const amp=z=>Math.hypot(z.re,z.im),phase=z=>Math.atan2(z.im,z.re)*180/Math.PI,num=id=>{const e=$(id);TE.assert(e.value.trim()!=='',`${id}: value required.`);return TE.readNumberInput(e);};
+function numberAttrs(value){return `value="${esc(TE.formatInputNumber(value))}" data-raw-number="${esc(value)}" data-display-number="${esc(TE.formatInputNumber(value))}"`;}
+function input(label,key,value,unit=''){return `<label>${label}<span>${unit}</span><input data-key="${key}" type="number" step="any" required ${['rho','Cp','k','sigma','h'].includes(key)?'min="0"':''} ${numberAttrs(value)}></label>`;}
 function notice(text,error=false){$('status').textContent=text;$('badge').textContent=error?'ERROR':'READY';$('badge').className=error?'error':'';}
 function dirty(){if(worker)return;$('badge').textContent=result?'INPUTS CHANGED':'READY';$('badge').className='';$('exportResults').disabled=true;$('exportCsv').disabled=true;if(result)$('status').textContent='Inputs changed. Run again to update the displayed result.';}
 function tab(name){document.querySelectorAll('[role=tab]').forEach(t=>{const active=t.dataset.tab===name;t.setAttribute('aria-selected',active);t.tabIndex=active?0:-1;});document.querySelectorAll('[role=tabpanel]').forEach(p=>p.hidden=p.id!==name);requestAnimationFrame(()=>{if(name==='geometry')drawGeometry();if(name==='results')drawResults();});}
@@ -526,15 +789,15 @@ function materialsForm(){
 }
 function palette(){$('palette').innerHTML=config.materials.map((m,i)=>`<button class="swatch ${i===selected?'active':''}" data-select="${i}" style="--swatch:${m.color}"><i></i>${esc(m.name)}</button>`).join('');}
 function boundaryForm(){
- $('electrodes').innerHTML=['source','sink'].map(name=>{const e=config.electrical;return `<div class="electrode"><h3>${name.toUpperCase()} ELECTRODE</h3><div class="grid3"><label>Side<select id="${name}Side">${['left','right','bottom','top'].map(side=>`<option ${side===e[name+'Side']?'selected':''}>${side}</option>`).join('')}</select></label><label>Range start <span>%</span><input id="${name}Start" type="number" value="${100*e[name+'Range'][0]}" min="0" max="100"></label><label>Range end <span>%</span><input id="${name}End" type="number" value="${100*e[name+'Range'][1]}" min="0" max="100"></label></div></div>`;}).join('');
+ $('electrodes').innerHTML=['source','sink'].map(name=>{const e=config.electrical;return `<div class="electrode"><h3>${name.toUpperCase()} ELECTRODE</h3><div class="grid3"><label>Side<select id="${name}Side">${['left','right','bottom','top'].map(side=>`<option ${side===e[name+'Side']?'selected':''}>${side}</option>`).join('')}</select></label><label>Range start <span>%</span><input id="${name}Start" type="number" ${numberAttrs(100*e[name+'Range'][0])} min="0" max="100"></label><label>Range end <span>%</span><input id="${name}End" type="number" ${numberAttrs(100*e[name+'Range'][1])} min="0" max="100"></label></div></div>`;}).join('');
  $('thermalCards').innerHTML=Object.entries(config.thermal).map(([side,b])=>`<div class="thermal-card" data-side="${side}"><h3>${side.toUpperCase()}</h3><label>Condition<select data-key="kind">${['temperature','flux','convection'].map(k=>`<option value="${k}" ${b.kind===k?'selected':''}>${{temperature:'Temperature · K',flux:'Outward total flux · W/m²',convection:'Convection · ambient K'}[k]}</option>`).join('')}</select></label><div class="grid3">${input('DC value','bias',typeof b.value==='number'?b.value:b.value.bias??0)}${input('AC peak','amplitude',typeof b.value==='number'?0:b.value.amplitude??0)}${input('Convection h','h',b.h??0)}</div></div>`).join('');
 }
 function fill(){materialsForm();boundaryForm();const v=config.electrical.value;
- for(const [id,value]of Object.entries({lx:config.lx*1000,ly:config.ly*1000,depth:config.depth*1000,nx:config.nx,ny:config.ny,electricalKind:config.electrical.kind,bias:typeof v==='number'?v:v.bias??0,amplitude:typeof v==='number'?0:v.amplitude??0,phase:typeof v==='number'?0:v.phase??0,mode:config.mode,frequency:config.frequency,samples:config.samples,maxPeriods:config.maxPeriods}))$(id).value=value;
- modes();drawGeometry();}
+ for(const [id,value]of Object.entries({lx:config.lx*1000,ly:config.ly*1000,depth:config.depth*1000,nx:config.nx,ny:config.ny,electricalKind:config.electrical.kind,bias:typeof v==='number'?v:v.bias??0,amplitude:typeof v==='number'?0:v.amplitude??0,phase:typeof v==='number'?0:v.phase??0,mode:config.mode,frequency:config.frequency,samples:config.samples,maxPeriods:config.maxPeriods})){if($(id).type==='number')TE.setNumberInput($(id),value);else $(id).value=value;}
+ modes();drawGeometry();meshPreview();validateUI();}
 function read(){const c=JSON.parse(JSON.stringify(config));
- c.materials=[...document.querySelectorAll('[data-material]')].map(card=>{const m={};card.querySelectorAll('[data-key]').forEach(e=>{TE.assert(e.value.trim()!=='','Complete material fields.');m[e.dataset.key]=['name','color'].includes(e.dataset.key)?e.value:TE.finite(Number(e.value),e.dataset.key);});m.alpha/=1e6;m.alphaSlope/=1e6;return m;});
- for(const card of document.querySelectorAll('[data-side]')){const v={};card.querySelectorAll('[data-key]').forEach(e=>{TE.assert(e.value.trim()!=='','Complete thermal fields.');v[e.dataset.key]=e.dataset.key==='kind'?e.value:Number(e.value);});c.thermal[card.dataset.side]={kind:v.kind,value:{bias:v.bias,amplitude:v.amplitude},h:v.h};}
+ c.materials=[...document.querySelectorAll('[data-material]')].map(card=>{const m={};card.querySelectorAll('[data-key]').forEach(e=>{TE.assert(e.value.trim()!=='','Complete material fields.');m[e.dataset.key]=['name','color'].includes(e.dataset.key)?e.value:TE.readNumberInput(e);});m.alpha/=1e6;m.alphaSlope/=1e6;return m;});
+ for(const card of document.querySelectorAll('[data-side]')){const v={};card.querySelectorAll('[data-key]').forEach(e=>{TE.assert(e.value.trim()!=='','Complete thermal fields.');v[e.dataset.key]=e.dataset.key==='kind'?e.value:TE.readNumberInput(e);});c.thermal[card.dataset.side]={kind:v.kind,value:{bias:v.bias,amplitude:v.amplitude},h:v.h};}
  c.electrical={kind:$('electricalKind').value,value:{bias:num('bias'),amplitude:num('amplitude'),phase:num('phase')}};
  for(const name of ['source','sink']){c.electrical[name+'Side']=$(name+'Side').value;c.electrical[name+'Range']=[num(name+'Start')/100,num(name+'End')/100];}
  c.mode=$('mode').value;c.frequency=num('frequency');c.samples=num('samples');c.maxPeriods=num('maxPeriods');return c;
@@ -546,14 +809,49 @@ function canvasFrame(id,c){const canvas=$(id),width=canvas.clientWidth||700,heig
  ctx.fillStyle='#839aa9';ctx.font='10px monospace';ctx.textAlign='center';for(let i=0;i<=4;i++){ctx.fillText(fmt(c.lx*1000*i/4),left+w*i/4,top+h+19);ctx.textAlign='right';ctx.fillText(fmt(c.ly*1000*i/4),left-9,top+h-h*i/4+3);ctx.textAlign='center';}ctx.fillText('x · mm',left+w/2,top+h+37);ctx.textAlign='left';ctx.fillText('y · mm',left-25,top-9);return {ctx,left,top,w,h};}
 function contacts(frame,c){const{ctx,left,top,w,h}=frame;ctx.lineWidth=5;for(const name of ['source','sink']){const side=c.electrical[name+'Side'],range=c.electrical[name+'Range'],count=['left','right'].includes(side)?c.ny:c.nx,start=Math.ceil(range[0]*count-1e-10)/count,end=Math.floor(range[1]*count+1e-10)/count;ctx.strokeStyle=name==='source'?'#ffffff':'#e47cd3';ctx.beginPath();if(side==='left'||side==='right'){const x=left+(side==='right'?w:0);ctx.moveTo(x,top+h*(1-start));ctx.lineTo(x,top+h*(1-end));}else{const y=top+(side==='bottom'?h:0);ctx.moveTo(left+w*start,y);ctx.lineTo(left+w*end,y);}ctx.stroke();}ctx.lineWidth=1;}
 function drawGeometry(){if($('geometry').hidden)return;const c=config,f=canvasFrame('geometryCanvas',c);geomFrame=f;const{ctx,left,top,w,h}=f;
- for(let j=0;j<c.ny;j++)for(let i=0;i<c.nx;i++){ctx.fillStyle=c.materials[c.materialMap[j*c.nx+i]]?.color||'#aaa';ctx.globalAlpha=.75;ctx.fillRect(left+i*w/c.nx,top+(c.ny-1-j)*h/c.ny,w/c.nx,h/c.ny);ctx.globalAlpha=1;ctx.strokeStyle='#0b141d';ctx.strokeRect(left+i*w/c.nx,top+(c.ny-1-j)*h/c.ny,w/c.nx,h/c.ny);}contacts(f,c);$('gridInfo').textContent=`${c.nx} × ${c.ny} cells · ${(c.nx+1)*(c.ny+1)} nodes`;}
+ for(let j=0;j<c.ny;j++)for(let i=0;i<c.nx;i++){ctx.fillStyle=c.materials[c.materialMap[j*c.nx+i]]?.color||'#aaa';ctx.globalAlpha=.75;ctx.fillRect(left+i*w/c.nx,top+(c.ny-1-j)*h/c.ny,w/c.nx,h/c.ny);ctx.globalAlpha=1;ctx.strokeStyle='#0b141d';ctx.strokeRect(left+i*w/c.nx,top+(c.ny-1-j)*h/c.ny,w/c.nx,h/c.ny);}contacts(f,c);$('gridInfo').textContent=`${c.nx} × ${c.ny} = ${c.nx*c.ny} elements · ${(c.nx+1)*(c.ny+1)} nodes`;}
 function paintAt(e){if(worker||!geomFrame)return;const rect=$('geometryCanvas').getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top,f=geomFrame;if(x<f.left||x>=f.left+f.w||y<f.top||y>=f.top+f.h)return;
  const i=Math.floor((x-f.left)/f.w*config.nx),j=config.ny-1-Math.floor((y-f.top)/f.h*config.ny);config.materialMap[j*config.nx+i]=selected;drawGeometry();dirty();}
 $('geometryCanvas').onpointerdown=e=>{paint=true;$('geometryCanvas').setPointerCapture(e.pointerId);paintAt(e);};$('geometryCanvas').onpointermove=e=>{if(paint)paintAt(e);};$('geometryCanvas').onpointerup=()=>paint=false;$('geometryCanvas').onpointercancel=()=>paint=false;
 $('palette').onclick=e=>{const b=e.target.closest('[data-select]');if(b){selected=Number(b.dataset.select);palette();}};
-$('applyGrid').onclick=()=>{try{const c=read(),nx=num('nx'),ny=num('ny'),lx=num('lx')/1000,ly=num('ly')/1000,depth=num('depth')/1000;const m=new TE.Mesh2D({nx,ny,lx,ly,depth});c.materialMap=Array.from({length:nx*ny},(_,k)=>{const i=k%nx,j=Math.floor(k/nx),oi=Math.min(config.nx-1,Math.floor((i+.5)/nx*config.nx)),oj=Math.min(config.ny-1,Math.floor((j+.5)/ny*config.ny));return config.materialMap[oj*config.nx+oi];});Object.assign(c,{nx,ny,lx,ly,depth});config=c;drawGeometry();dirty();}catch(e){notice(e.message,true);}};
+function validationTargets(path){
+ const direct={lx:'lx',ly:'ly',depth:'depth',nx:'nx',ny:'ny',mode:'mode',frequency:'frequency',samples:'samples',maxPeriods:'maxPeriods','electrical.kind':'electricalKind','electrical.value.bias':'bias','electrical.value.amplitude':'amplitude','electrical.value.phase':'phase'};
+ if(direct[path])return [$(direct[path])];
+ const material=path.match(/^materials\.(\d+)\.(\w+)$/);if(material)return [...document.querySelectorAll(`[data-material="${material[1]}"] [data-key="${material[2]}"]`)];
+ const thermal=path.match(/^thermal\.(left|right|top|bottom)\.(?:value\.)?(\w+)$/);if(thermal)return [...document.querySelectorAll(`[data-side="${thermal[1]}"] [data-key="${thermal[2]}"]`)];
+ const electrode=path.match(/^electrical\.(source|sink)(Side|Range)$/);if(electrode)return electrode[2]==='Side'?[$(electrode[1]+'Side')]:[$(electrode[1]+'Start'),$(electrode[1]+'End')];
+ return [];
+}
+function validateUI(){
+ const controls=[...document.querySelectorAll('.settings input,.settings select')];
+ controls.forEach(e=>{e.setCustomValidity('');e.removeAttribute('aria-invalid');e.removeAttribute('title');});
+ const issues=[];
+ for(const e of controls.filter(e=>e.type==='number')){
+  try{TE.readNumberInput(e);}catch{issues.push({path:e.id||e.dataset.key,message:'Enter a finite numerical value.',elements:[e]});}
+ }
+ if(!issues.length){try{
+  let draft=read();const g=geometryInput();
+  if(Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=2&&(g.nx+1)*(g.ny+1)<=1600)draft=TE.remeshConfig(draft,{...g,lx:config.lx,ly:config.ly,depth:config.depth});
+  Object.assign(draft,g);issues.push(...TE.validate2DConfig(draft));
+ }catch(e){issues.push({path:'model',message:e.message});}}
+ for(const issue of issues)for(const e of issue.elements||validationTargets(issue.path)){if(!e)continue;e.setCustomValidity(issue.message);e.setAttribute('aria-invalid','true');e.title=issue.message;}
+ const summary=$('validationSummary');summary.hidden=!issues.length;
+ summary.innerHTML=issues.length?'<strong>Correct these inputs before applying, exporting or running:</strong><ul>'+issues.slice(0,10).map(e=>`<li><b>${esc(e.path)}</b> — ${esc(e.message)}</li>`).join('')+'</ul>'+(issues.length>10?`<small>${issues.length-10} more issue(s) are highlighted in the form.</small>`:''):'';
+ for(const id of ['run','save','applyGrid'])$(id).disabled=Boolean(worker)||issues.length>0;
+ return issues.length===0;
+}
+function geometryInput(){return {nx:num('nx'),ny:num('ny'),lx:num('lx')/1000,ly:num('ly')/1000,depth:num('depth')/1000};}
+function meshChanged(g){return g.nx!==config.nx||g.ny!==config.ny||Math.abs(g.lx-config.lx)>1e-14||Math.abs(g.ly-config.ly)>1e-14||Math.abs(g.depth-config.depth)>1e-14;}
+function meshPreview(){
+ try{const g=geometryInput(),valid=Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=2;
+  $('meshSummary').textContent=valid?`${g.nx} × ${g.ny} = ${g.nx*g.ny} elements / ${(g.nx+1)*(g.ny+1)} nodes`:'Enter whole-number element counts of at least 2.';
+  $('meshPending').textContent=valid&&(g.nx+1)*(g.ny+1)>1600?'Too large: maximum 1600 nodes.':meshChanged(g)?'Pending change — Apply mesh, Run simulation or Export model will apply it.':'Mesh is up to date.';
+ }catch{$('meshSummary').textContent='Enter valid dimensions and element counts.';$('meshPending').textContent='';}
+}
+function applyGeometry(){const c=read(),g=geometryInput(),candidate=TE.remeshConfig(c,g);TE.assertValid2DConfig(candidate);config=candidate;drawGeometry();meshPreview();validateUI();return config;}
+$('applyGrid').onclick=()=>{try{applyGeometry();dirty();$('status').textContent=`Mesh applied: ${config.nx} × ${config.ny} = ${config.nx*config.ny} elements, ${(config.nx+1)*(config.ny+1)} nodes. Inspect material regions after remeshing.`;}catch(e){notice(e.message,true);}};
 $('fill').onclick=()=>{config.materialMap.fill(selected);drawGeometry();dirty();};
-$('addMaterial').onclick=()=>{try{config=read();TE.assert(config.materials.length<12,'Maximum 12 materials.');config.materials.push({name:'New material',rho:2000,Cp:500,k:2,sigma:1e5,beta:0,alpha:0,alphaSlope:0,color:['#96a8f2','#dd88b8','#b1c47c'][config.materials.length%3]});materialsForm();dirty();}catch(e){notice(e.message,true);}};
+$('addMaterial').onclick=()=>{try{config=read();TE.assert(config.materials.length<12,'Maximum 12 materials.');config.materials.push({name:'New material',rho:2000,Cp:500,k:2,sigma:1e5,beta:0,alpha:0,alphaSlope:0,color:['#96a8f2','#dd88b8','#b1c47c'][config.materials.length%3]});materialsForm();dirty();validateUI();}catch(e){notice(e.message,true);}};
 function color(t){const stops=[[24,44,89],[36,107,153],[87,182,173],[227,193,110],[244,141,75]],u=Math.max(0,Math.min(1,t))*4,i=Math.min(3,Math.floor(u)),f=u-i;return `rgb(${stops[i].map((v,k)=>Math.round(v+(stops[i+1][k]-v)*f)).join(',')})`;}
 function chart(id,x,y,label){const el=$(id),W=el.clientWidth||450,H=210,L=65,R=15,T=20,B=38;let lo=Math.min(...y),hi=Math.max(...y);if(hi-lo<1e-12*Math.max(1,Math.abs(hi))){lo-=Math.max(1e-8,Math.abs(hi)*1e-5);hi+=Math.max(1e-8,Math.abs(hi)*1e-5);}else{const d=(hi-lo)*.12;lo-=d;hi+=d;}const X=v=>L+(v-x[0])/(x.at(-1)-x[0]||1)*(W-L-R),Y=v=>H-B-(v-lo)/(hi-lo)*(H-B-T);let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}"><text x="${L}" y="11" fill="#8299a8" font-size="9">${esc(label)}</text>`;
  for(let i=0;i<5;i++){const v=lo+(hi-lo)*i/4,xx=x[0]+(x.at(-1)-x[0])*i/4;s+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#293b49" stroke-dasharray="3 5"/><text x="${L-8}" y="${Y(v)+3}" text-anchor="end" fill="#8299a8" font-size="9">${fmt(v)}</text><text x="${X(xx)}" y="${H-18}" text-anchor="middle" fill="#8299a8" font-size="9">${fmt(xx)}</text>`;}
@@ -582,8 +880,8 @@ function accept(r){result=r;const periodic=r.method!=='steady';probe=Math.floor(
  const values=periodic?r.temperature.flat():r.temperature,lo=values.reduce((a,b)=>Math.min(a,b),Infinity),hi=values.reduce((a,b)=>Math.max(a,b),-Infinity),hs=periodic?r.harmonics.terminalVoltage:[{re:r.terminalVoltage,im:0}],v=hs[periodic?1:0];
  $('vLabel').textContent='TERMINAL VOLTAGE · '+(periodic?'1ω':'DC');$('vMetric').textContent=fmt(amp(v)*1000)+' mV';$('vPhase').textContent=phase(v).toFixed(3)+'° · peak amplitude';$('tMetric').textContent=lo.toFixed(3)+'–'+hi.toFixed(3)+' K';$('cycleMetric').textContent=periodic?r.periods+' cycles':'DC';$('errorMetric').textContent=periodic?'Normalized error '+r.periodicError.toExponential(2)+' ≤ 1':'Energy residual '+r.energyResidual.toExponential(2)+' W';
  $('spectrum').innerHTML=hs.map((z,n)=>`<tr><td>${n?n+'ω':'DC'}</td><td>${n?fmt(n*r.frequency):'0'} Hz</td><td>${amp(z).toExponential(5)}</td><td>${amp(z)>1e-16?phase(z).toFixed(3)+'°':'—'}</td><td>${z.re.toExponential(5)}</td><td>${z.im.toExponential(5)}</td></tr>`).join('');$('exportResults').disabled=false;$('exportCsv').disabled=false;tab('results');}
-function lock(value){document.querySelectorAll('.settings').forEach(e=>e.disabled=value);for(const id of ['preset','import','addMaterial','run'])$(id).disabled=value;$('cancel').hidden=!value;if(!value)modes();}
-$('run').onclick=()=>{try{TE.assert(num('nx')===config.nx&&num('ny')===config.ny&&Math.abs(num('lx')/1000-config.lx)<1e-14&&Math.abs(num('ly')/1000-config.ly)<1e-14&&Math.abs(num('depth')/1000-config.depth)<1e-14,'Apply dimensions / remesh before running.');config=read();TE.from2DConfig(config);palette();}catch(e){notice(e.message,true);return;}
+function lock(value){document.querySelectorAll('.settings').forEach(e=>e.disabled=value);for(const id of ['preset','import','addMaterial','run'])$(id).disabled=value;$('cancel').hidden=!value;if(!value){modes();validateUI();}}
+$('run').onclick=()=>{try{applyGeometry();TE.from2DConfig(config);palette();}catch(e){notice(e.message,true);return;}
  lock(true);$('exportResults').disabled=true;$('exportCsv').disabled=true;$('badge').textContent='COMPUTING';$('badge').className='';$('status').textContent='Solving coupled 2D transport…';started=performance.now();
  try{const url=URL.createObjectURL(new Blob([$('workerSource').textContent],{type:'text/javascript'}));worker=new Worker(url);URL.revokeObjectURL(url);
   worker.onmessage=({data})=>{if(data.type==='progress'){$('status').textContent=`Cycle ${data.progress.cycle}/${data.progress.maxPeriods}${data.progress.error===null?'':' · normalized error '+data.progress.error.toExponential(2)}`;$('elapsed').textContent=((performance.now()-started)/1000).toFixed(1)+' s';}
@@ -592,7 +890,7 @@ $('run').onclick=()=>{try{TE.assert(num('nx')===config.nx&&num('ny')===config.ny
  }catch(e){worker?.terminate();worker=null;lock(false);notice(e.message,true);}};
 $('cancel').onclick=()=>{worker?.terminate();worker=null;lock(false);notice('Stopped. No unfinished result was accepted.');};
 function download(name,data,type='application/json'){const url=URL.createObjectURL(new Blob([data],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-$('save').onclick=()=>{try{download('thermoelectric-2d-model.json',JSON.stringify(read(),null,2));}catch(e){notice(e.message,true);}};
+$('save').onclick=()=>{try{download('thermoelectric-2d-model.json',JSON.stringify(applyGeometry(),null,2));}catch(e){notice(e.message,true);}};
 $('exportResults').onclick=()=>{if(result)download('thermoelectric-2d-results.json',JSON.stringify(result));};
 $('exportCsv').onclick=()=>{if(!result)return;const hs=result.method==='steady'?[{re:result.terminalVoltage,im:0}]:result.harmonics.terminalVoltage;download('thermoelectric-2d-spectrum.csv',['harmonic,frequency_Hz,peak_V,phase_deg,real_V,imag_V',...hs.map((z,n)=>[n,n*(result.frequency??0),amp(z),amp(z)>1e-16?phase(z):'',z.re,z.im].join(','))].join('\n'),'text/csv');};
 $('import').onclick=()=>$('file').click();$('file').onchange=async()=>{const f=$('file').files[0];if(!f)return;try{TE.assert(f.size<2e6,'Model JSON must be <2 MB.');const c=JSON.parse(await f.text());TE.from2DConfig(c);TE.assert(c.materials.every(m=>['rho','Cp','k','sigma','alpha'].every(k=>typeof m[k]==='number')),'The editor imports scalar reference laws only.');TE.assert([64,128,256,512,1024].includes(c.samples),'Unsupported GUI step count.');TE.assert(Object.values(c.thermal).every(b=>typeof b.value==='number'||!(b.value.phase??0)),'Thermal phase requires the API.');c.materials.forEach(m=>{if(!/^#[0-9a-f]{6}$/i.test(m.color))m.color='#73d8d0';});config=c;selected=0;fill();dirty();notice('Model imported. Run to compute its response.');}catch(e){notice('Import failed: '+e.message,true);}finally{$('file').value='';}};
@@ -600,7 +898,9 @@ $('preset').onchange=()=>{config=TE.default2D();selected=0;const p=$('preset').v
  if(p==='spreading'){config.mode='steady';config.electrical.value={bias:.1,amplitude:0};config.electrical.sourceRange=[.25,.75];}
  if(['joule','nonlinear','seebeck'].includes(p)){config.nx=12;config.ny=6;config.lx=.001;config.ly=.001;config.materials=[{name:p==='seebeck'?'Thermoelectric material':'Resistive material',rho:2000,Cp:500,k:2,sigma:1e5,beta:p==='nonlinear'?.01:0,alpha:p==='seebeck'?2e-4:0,alphaSlope:0,color:'#73d8d0'}];config.materialMap=Array(config.nx*config.ny).fill(0);config.thermal.right={kind:'temperature',value:{bias:p==='seebeck'?350:300,amplitude:0},h:0};config.electrical.value.amplitude=p==='nonlinear'?.2:1;if(p==='seebeck'){config.mode='steady';config.electrical.kind='open_circuit';}}
  fill();dirty();};
-document.querySelectorAll('.settings').forEach(e=>{e.addEventListener('input',dirty);e.addEventListener('change',()=>{modes();try{config=read();palette();drawGeometry();}catch{}dirty();});});
+document.querySelectorAll('.settings').forEach(e=>{e.addEventListener('input',event=>{if(event.target.type==='number'){delete event.target.dataset.rawNumber;delete event.target.dataset.displayNumber;}dirty();meshPreview();validateUI();});e.addEventListener('change',()=>{modes();try{config=read();palette();drawGeometry();}catch{}dirty();meshPreview();validateUI();});});
+// Normalize completed numeric edits, retaining the full raw number behind the display.
+document.addEventListener('focusout',e=>{if(e.target.matches('input[type=number]')&&e.target.value.trim()!==''){try{TE.setNumberInput(e.target,TE.readNumberInput(e.target));meshPreview();validateUI();}catch{}}});
 let timer;window.addEventListener('resize',()=>{clearTimeout(timer);timer=setTimeout(()=>{drawGeometry();drawResults();},120);});fill();
 })();
 </script></body></html>
