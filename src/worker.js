@@ -1,0 +1,1 @@
+self.onmessage=event=>{try{const result=TE.run2D(event.data,p=>self.postMessage({type:'progress',progress:p}));self.postMessage({type:'result',result});}catch(e){self.postMessage({type:'error',message:e.message});}};

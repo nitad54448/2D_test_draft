@@ -1,0 +1,32 @@
+✔ 2D mesh volumes and control-volume capacities (2.506046ms)
+✔ manufactured quadratic 2D Poisson solution (4.669599ms)
+✔ uniform full-contact current, resistance and transverse invariance (3.118347ms)
+✔ current in vertical direction uses electrode area correctly (1.396949ms)
+✔ partial electrode yields current spreading and conserves current (11.042398ms)
+✔ multimaterial resistance in series (1.628768ms)
+✔ material interface capacity uses both regions (0.544699ms)
+✔ Seebeck DC reduces to analytic 1D limit (17.878643ms)
+✔ open circuit can have internal circulating currents in 2D (0.995026ms)
+✔ Joule parabola and energy balance in extruded 1D (7.528585ms)
+✔ Peltier interface analytical temperature (8.05032ms)
+✔ adiabatic boundary includes Peltier transport (9.409533ms)
+✔ convection and total energy balance (10.056776ms)
+✔ genuine 2D Joule solution converges to double sine series (58.518487ms)
+✔ 2D complex thermal 2ω response matches analytical sine series (4459.505503ms)
+✔ nonlinear 3ω and all temperature harmonics reproduce the 1D solver (2329.804024ms)
+✔ invalid grid, overlapping electrodes and conflicting corners fail (3.949386ms)
+✔ steady unanchored and insufficient periodic cycles are rejected (73.247235ms)
+✔ Thomson term agrees with analytical temperature-dependent Seebeck case (31.970224ms)
+✔ vertical imposed heat flux has the correct outward sign (4.374004ms)
+✔ 2D time-step refinement exhibits second-order convergence (2773.071066ms)
+✔ offline document embeds all sources and five accessible tabs (1.331521ms)
+✔ embedded worker computes a real 2D partial-contact case (127.720113ms)
+✔ embedded worker rejects bad material properties (56.736499ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9900.099474

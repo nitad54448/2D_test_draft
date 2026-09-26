@@ -1,0 +1,99 @@
+# Validation of the 2D conversion
+
+24 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
+The tests use the same core source embedded in `index.html`.
+
+| Check | Acceptance |
+|---|---|
+| Volume / capacity | Summed control volumes and material-weighted capacities match the domain |
+| Manufactured 2D Poisson | Quadratic solution T=300+c(x²+y²), error <1e-6 K |
+| Full electrodes | Uniform current and analytical resistance; horizontal and vertical orientations |
+| Partial electrode | Nonzero transverse current; equipotential contacts; interior Kirchhoff residual <1e-9 A |
+| Series materials | Analytical total resistance with a grid-aligned interface |
+| Interface capacity | Contributions from both materials retained |
+| Seebeck | Open-circuit analytical voltage and linear temperature |
+| Open-circuit loops | Zero terminal current with nonzero internal currents in a heterogeneous 2D model |
+| Joule DC | Analytical parabola in the transversely uniform limit; energy residual <1e-8 W |
+| Peltier interface | Analytical junction temperature; energy balance |
+| Boundary Peltier | Analytic solution with zero total thermal flux at one boundary |
+| Convection | Analytical terminal temperatures and energy balance |
+| True 2D steady heat | Uniform Joule source, all four sides held at 300 K; comparison with a double sine series |
+| Spatial convergence | 8×8 to 16×16 cells: center error reduced below 35%; fine error <0.002 K |
+| True 2D 2ω heat | Complex double sine-series solution, relative tolerance 3% plus 1e-4 K on a 10×10 mesh |
+| 1D nonlinear regression | 2D extrusion reproduces the corrected 1D BDF2 model, including 3ω voltage, within 0.8% +2e-11 V |
+| Thomson | alpha=b log(T/300), constant tau=b; agreement with exact 1D limit |
+| Heat-flux sign | Analytical vertical profile with inward top flux |
+| Temporal convergence | 64→128→256 steps: successive 2ω discrepancy reduced below 40% |
+| Error handling | Bad mesh, overlapping contacts, contradictory corner temperatures, unanchored steady problem and nonconverged periodic state rejected |
+| Packaging | Five tab panels, no external script/style resources, complete embedded sources |
+| Worker | Real 2D partial-contact calculation and explicit material-error delivery |
+
+## Genuine 2D analytical reference
+
+For a homogeneous rectangular plate with temperature Tb imposed on all four
+sides, uniform volumetric source Q, dimensions Lx/Ly, and volumetric capacity c,
+the complex temperature response at angular frequency Omega is:
+
+```
+T_hat(x,y) = sum over positive odd m,n of
+    [16 Q / (pi² m n)] * sin(m*pi*x/Lx) * sin(n*pi*y/Ly)
+    / [k*pi²*(m²/Lx² + n²/Ly²) + i*Omega*c]
+```
+
+For DC, take Omega=0 and add Tb. For pure sinusoidal current with constant
+conductivity and alpha=0, the Joule source has equal DC and 2ω amplitudes
+Q=Jpeak²/(2 sigma). This gives a 2D harmonic reference independently of the code's
+matrix construction. The tests sum odd modes through 101 in both directions.
+
+The spatial refinement test uses the constant-current DC source. The harmonic
+check uses an AC current and compares both real and imaginary components at the
+center, with all sides thermally clamped. This is not a 1D-only validation.
+
+## Regression against the earlier 1D app
+
+`tests/reference_1d.json` was generated from the earlier corrected 1D JavaScript
+solver at 2 Hz, 10 spatial cells and 256 steps per period. The material has
+rho=2000 kg/m³, Cp=500 J/kg K, k=2 W/m K and temperature-dependent resistivity
+`rhoe=1e-5*(1+.01*(T-300))`. Current amplitude is 0.2 A through a 1 mm² section.
+Both end temperatures are 300 K.
+
+The 2D regression extrudes this case across four transverse cells with insulated
+transverse boundaries. It compares all temperature harmonics and the terminal
+voltage, including 3ω. The fixture is included, so the 1D project is not required
+to run the tests. The optional generator accepts the earlier project's loader:
+
+```bash
+node tests/generate_1d_reference.cjs /path/to/thermoelectric_browser/tests/load.cjs
+```
+
+## Example execution
+
+The default 12×8 Cu/BiTe periodic example was also executed. Its configuration and
+computed terminal spectrum are in `example-summary.json`. Execution time is
+hardware-dependent and is not a browser performance guarantee. Small 3ω values
+require resolution/tolerance studies for the intended application.
+
+## Browser verification status
+
+Numerical code and exact embedded-worker execution passed. Full browser layout,
+canvas interactions, keyboard navigation, file downloads and cancellation were
+not exercised in an actual browser here because a browser executable was unavailable.
+The supplied optional smoke test can be run when Playwright and Chromium exist:
+
+```bash
+npm install --no-save playwright
+npx playwright install chromium
+node tests/browser.spec.cjs
+```
+
+That browser test is not counted among the 24 passed tests. It covers tab switching,
+a Seebeck run, a nonlinear harmonic run, result export, cancellation, page errors
+and a narrow viewport.
+
+## Scope of validation
+
+Conservation and analytical limits are checked on the cases above; this is not
+experimental validation or proof of accuracy for all parameter combinations.
+Refine grid/time resolution and verify physical property ranges for your model.
+Perfect interfaces and grid-aligned material regions are assumptions. Boundary
+contact singularities and tiny painted regions particularly need spatial refinement.
