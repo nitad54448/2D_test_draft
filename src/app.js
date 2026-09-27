@@ -57,7 +57,7 @@ function validateUI(){
  }
  if(!issues.length){try{
   let draft=read();const g=geometryInput();
-  if(Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=2&&(g.nx+1)*(g.ny+1)<=1600)draft=TE.remeshConfig(draft,{...g,lx:config.lx,ly:config.ly,depth:config.depth});
+  if(Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=1&&(g.nx+1)*(g.ny+1)<=1600)draft=TE.remeshConfig(draft,{...g,lx:config.lx,ly:config.ly,depth:config.depth});
   Object.assign(draft,g);issues.push(...TE.validate2DConfig(draft));
  }catch(e){issues.push({path:'model',message:e.message});}}
  for(const issue of issues)for(const e of issue.elements||validationTargets(issue.path)){if(!e)continue;e.setCustomValidity(issue.message);e.setAttribute('aria-invalid','true');e.title=issue.message;}
@@ -69,8 +69,8 @@ function validateUI(){
 function geometryInput(){return {nx:num('nx'),ny:num('ny'),lx:num('lx')/1000,ly:num('ly')/1000,depth:num('depth')/1000};}
 function meshChanged(g){return g.nx!==config.nx||g.ny!==config.ny||Math.abs(g.lx-config.lx)>1e-14||Math.abs(g.ly-config.ly)>1e-14||Math.abs(g.depth-config.depth)>1e-14;}
 function meshPreview(){
- try{const g=geometryInput(),valid=Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=2;
-  $('meshSummary').textContent=valid?`${g.nx} × ${g.ny} = ${g.nx*g.ny} elements / ${(g.nx+1)*(g.ny+1)} nodes`:'Enter whole-number element counts of at least 2.';
+ try{const g=geometryInput(),valid=Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=1;
+  $('meshSummary').textContent=valid?`${g.nx} × ${g.ny} = ${g.nx*g.ny} elements / ${(g.nx+1)*(g.ny+1)} nodes`:'Enter whole-number counts: Nx ≥ 2 and Ny ≥ 1.';
   $('meshPending').textContent=valid&&(g.nx+1)*(g.ny+1)>1600?'Too large: maximum 1600 nodes.':meshChanged(g)?'Pending change — Apply mesh, Run simulation or Export model will apply it.':'Mesh is up to date.';
  }catch{$('meshSummary').textContent='Enter valid dimensions and element counts.';$('meshPending').textContent='';}
 }

@@ -60,7 +60,11 @@ unmeshed voids or curved boundaries. Each cell must have a conducting material.
 Set **Elements along x (Nx)** and **Elements along y (Ny)** in the Geometry tab.
 The total element count is **Nx × Ny**, and the node count is **(Nx+1) × (Ny+1)**.
 For example, Nx=20 and Ny=10 gives 200 elements and 231 nodes. There is no fixed
-127-element count. **Time steps per period** is a separate temporal setting.
+127-element count. For a 1D reduction along x, set **Ny = 1**, use full
+left/right electrical contacts, and set the top/bottom thermal boundaries to
+zero flux. Materials can vary along x. Keep Ly and depth positive: the physical
+cross-section is **Ly × depth**. This is one row of 2D cells with two node rows;
+Ny = 1 alone does not enforce a 1D solution under asymmetric boundary conditions. **Time steps per period** is a separate temporal setting.
 
 After changing dimensions or element counts, click **Apply mesh** to update the
 preview immediately. **Run simulation** and **Export model** also apply pending
@@ -103,7 +107,7 @@ inside the worker before computation.
 | Convection coefficient h | Finite and nonnegative; zero means no convection |
 | Current, voltage, heat flux, Seebeck coefficient and slopes | Either sign, but finite |
 | Frequency | Positive for periodic runs; nonnegative in steady mode |
-| Nx, Ny | Integers of at least 2; at most 1600 total nodes |
+| Nx, Ny | Integers: Nx ≥ 2, Ny ≥ 1; at most 1600 total nodes |
 | Steps per cycle | Integer 32–2048 through the API; GUI choices 64–1024 |
 | Maximum cycles | Integer 3–1000 |
 | Electrode ranges | 0 ≤ start < end ≤ 100%, at least two covered nodes, no overlap |
@@ -356,8 +360,8 @@ Run:
 node --test tests/solver.test.cjs tests/worker.test.cjs tests/ui-helpers.test.cjs tests/validation.test.cjs tests/review.test.cjs
 ```
 
-All 54 automated tests passed on this package: 21 numerical tests, four packaging/
-worker checks, five precision/remeshing checks 20 input-validation checks and four review regression checks.
+All 58 automated tests passed on this package: 24 numerical tests, four packaging/
+worker checks, six precision/remeshing checks 20 input-validation checks and four review regression checks.
 They cover analytical 2D solutions, current spreading, circulating currents in
 open circuit, interface Peltier, Thomson, energy balances, mesh/time refinement,
 agreement with the corrected 1D solver, and rejection of invalid configurations.

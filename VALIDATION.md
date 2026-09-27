@@ -1,6 +1,6 @@
 # Validation of the 2D conversion
 
-54 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
+58 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
 The tests use the same core source embedded in `index.html`.
 
 | Check | Acceptance |
@@ -86,7 +86,7 @@ npx playwright install chromium
 node tests/browser.spec.cjs
 ```
 
-That browser test is not counted among the 54 passed tests. It covers tab switching,
+That browser test is not counted among the 58 passed tests. It covers tab switching,
 a Seebeck run, a nonlinear harmonic run, result export, cancellation, page errors
 and a narrow viewport.
 
@@ -147,3 +147,12 @@ preserves harmonic representation selection across DC views, and exports the
 absolute start time of each saved cycle. Existing analytical thermoelectric and
 harmonic tests pass unchanged. This review does not establish absence of all bugs;
 full browser interaction testing and experimental validation remain outstanding.
+
+## Single-row / 1D reduction
+
+Ny = 1 is accepted by the form, remesher, configuration validation and mesh.
+Four additional tests cover single-row remeshing and invalid Ny values, analytical
+Seebeck voltage, a Peltier material interface, and nonlinear DC/1ω/2ω/3ω agreement
+with the independent 1D reference. All 58 tests pass. The one-row reduction uses
+full left/right contacts and adiabatic top/bottom boundaries. Ly and depth still
+set the positive physical cross-section; this is not a zero-height mesh.

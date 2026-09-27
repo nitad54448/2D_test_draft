@@ -1,7 +1,7 @@
 (function(TE){
 class Mesh2D {
  constructor({nx,ny,lx,ly,depth=1,materialMap}) {
-  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=2,'Use at least 2 cells in each direction.');
+  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=1,'Use at least 2 cells along x and 1 along y.');
   TE.assert((nx+1)*(ny+1)<=1600,'Maximum 1600 nodes in this browser version.');
   TE.assert([lx,ly,depth].every(v=>Number.isFinite(v)&&v>0),'Dimensions and depth must be positive.');
   Object.assign(this,{nx,ny,lx,ly,depth});this.dx=lx/nx;this.dy=ly/ny;this.n=(nx+1)*(ny+1);

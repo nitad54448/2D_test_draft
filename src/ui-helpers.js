@@ -21,7 +21,7 @@
  };
  TE.remeshConfig=(config,{nx,ny,lx,ly,depth})=>{
   // Validate before allocating or mutating the displayed model.
-  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=2,'Elements along x and y must be integers of at least 2.');
+  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=1,'Element counts must be integers: Nx ≥ 2 and Ny ≥ 1.');
   TE.assert((nx+1)*(ny+1)<=1600,`Requested mesh: ${nx*ny} elements, ${(nx+1)*(ny+1)} nodes. The browser limit is 1600 nodes; reduce Nx or Ny.`);
   TE.assert([lx,ly,depth].every(v=>Number.isFinite(v)&&v>0),'Dimensions and depth must be positive.');
   const next={...config,nx,ny,lx,ly,depth};

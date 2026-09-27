@@ -9,7 +9,7 @@
   if(!object(c))return [{path:'model',message:'The model must be a JSON object.'}];
   if(!['steady','periodic'].includes(c.mode))add('mode','Select steady or periodic mode.');
   const periodic=c.mode==='periodic';
-  const nxOK=integer(c.nx,'nx',2),nyOK=integer(c.ny,'ny',2);
+  const nxOK=integer(c.nx,'nx',2),nyOK=integer(c.ny,'ny',1);
   if(nxOK&&nyOK&&(c.nx+1)*(c.ny+1)>1600){add('nx','The mesh may contain at most 1600 nodes.');add('ny','Reduce Nx or Ny to stay at or below 1600 nodes.');}
   const lxOK=positive(c.lx,'lx'),lyOK=positive(c.ly,'ly'),depthOK=positive(c.depth,'depth');
   if(nxOK&&nyOK&&lxOK&&lyOK&&depthOK){const dx=c.lx/c.nx,dy=c.ly/c.ny;for(const v of [dx,dy,dx*dy*c.depth/4,dx*c.depth/2,dy*c.depth/2,c.lx*c.ly*c.depth])if(!Number.isFinite(v)||v<=0){add('depth','Dimensions produce zero or overflowing cell volumes/areas. Use numerically representable dimensions.');break;}}

@@ -31,3 +31,10 @@ test('invalid mesh edits fail before mutating the current model',()=>{
  assert.equal(JSON.stringify(c),before);
  const max=TE.remeshConfig(c,{nx:39,ny:39,lx:.002,ly:.001,depth:.001});assert.equal(TE.from2DConfig(max).mesh.n,1600);
 });
+
+test('single-row remesh retains layered material order and rejects nonpositive Ny',()=>{
+ const c=TE.default2D(),g={nx:12,ny:1,lx:c.lx,ly:c.ly,depth:c.depth};
+ const next=TE.remeshConfig(c,g);assert.deepEqual(next.materialMap,[0,0,0,0,0,0,1,1,1,1,1,1]);
+ assert.equal(TE.from2DConfig(next).mesh.n,26);
+ for(const ny of [0,-1,1.5]){assert.throws(()=>TE.remeshConfig(c,{...g,ny}));assert.throws(()=>TE.from2DConfig({...next,ny}));}
+});

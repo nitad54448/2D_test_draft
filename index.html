@@ -10,7 +10,7 @@
 <div class="status-row"><span id="badge">READY</span><span id="status" role="status" aria-live="polite">Build your model in the tabs below, then run a simulation.</span><span id="elapsed"></span><progress id="runProgress" aria-label="Cycle budget used" hidden></progress></div>
 <div id="validationSummary" class="validation-summary" role="alert" hidden></div>
 <nav class="tabs" role="tablist" aria-label="Workbench sections"><button role="tab" id="tab-geometry" aria-controls="geometry" aria-selected="true" data-tab="geometry">01 <span>Geometry</span></button><button role="tab" id="tab-materials" aria-controls="materials" aria-selected="false" tabindex="-1" data-tab="materials">02 <span>Materials</span></button><button role="tab" id="tab-boundaries" aria-controls="boundaries" aria-selected="false" tabindex="-1" data-tab="boundaries">03 <span>Boundaries</span></button><button role="tab" id="tab-solver" aria-controls="solver" aria-selected="false" tabindex="-1" data-tab="solver">04 <span>Solver</span></button><button role="tab" id="tab-results" aria-controls="results" aria-selected="false" tabindex="-1" data-tab="results">05 <span>Results</span></button></nav>
-<section id="geometry" role="tabpanel" aria-labelledby="tab-geometry" class="panel"><div class="two-col"><div class="card"><div class="card-head"><div><h2>Material domain</h2><p>Click or drag to paint cells with the selected material.</p></div><span class="tag" id="gridInfo"></span></div><div class="canvas-box"><canvas id="geometryCanvas" aria-label="Material grid, x horizontal and y vertical"></canvas></div><div id="palette" class="palette"></div><div class="legend-note">x → right · y ↑ up · grid lines define material interfaces</div></div><div class="card"><h2>Dimensions & mesh</h2><fieldset class="settings"><div class="grid2"><label>Width Lx <span>mm</span><input id="lx" type="number" step="any" min="0" required></label><label>Height Ly <span>mm</span><input id="ly" type="number" step="any" min="0" required></label><label>Out-of-plane depth <span>mm</span><input id="depth" type="number" step="any" min="0" required></label><label>Elements along x (Nx)<input id="nx" type="number" min="2" step="1"></label><label>Elements along y (Ny)<input id="ny" type="number" min="2" step="1"></label></div><div class="mesh-summary" aria-live="polite"><strong id="meshSummary"></strong><small id="meshPending"></small></div><button id="applyGrid" class="secondary">Apply mesh</button><button id="fill" class="text-button">Fill with selected material</button></fieldset><p class="note">Elements are the painted cells: total = Nx × Ny. Nodes = (Nx + 1) × (Ny + 1), with a maximum of 1600 nodes. Apply mesh updates the preview; Run simulation and Export model also apply pending changes. Inspect material regions after remeshing.</p><div class="info-block"><b>Planar 2D</b><p>The specified depth converts current density to amperes and heat flux to watts. It is constant throughout the domain.</p></div></div></div></section>
+<section id="geometry" role="tabpanel" aria-labelledby="tab-geometry" class="panel"><div class="two-col"><div class="card"><div class="card-head"><div><h2>Material domain</h2><p>Click or drag to paint cells with the selected material.</p></div><span class="tag" id="gridInfo"></span></div><div class="canvas-box"><canvas id="geometryCanvas" aria-label="Material grid, x horizontal and y vertical"></canvas></div><div id="palette" class="palette"></div><div class="legend-note">x → right · y ↑ up · grid lines define material interfaces</div></div><div class="card"><h2>Dimensions & mesh</h2><fieldset class="settings"><div class="grid2"><label>Width Lx <span>mm</span><input id="lx" type="number" step="any" min="0" required></label><label>Height Ly <span>mm</span><input id="ly" type="number" step="any" min="0" required></label><label>Out-of-plane depth <span>mm</span><input id="depth" type="number" step="any" min="0" required></label><label>Elements along x (Nx)<input id="nx" type="number" min="2" step="1"></label><label>Elements along y (Ny)<input id="ny" type="number" min="1" step="1"></label></div><div class="mesh-summary" aria-live="polite"><strong id="meshSummary"></strong><small id="meshPending"></small></div><button id="applyGrid" class="secondary">Apply mesh</button><button id="fill" class="text-button">Fill with selected material</button></fieldset><p class="note">Elements are the painted cells: total = Nx × Ny. Nodes = (Nx + 1) × (Ny + 1), with a maximum of 1600 nodes. Apply mesh updates the preview; Run simulation and Export model also apply pending changes. Inspect material regions after remeshing. For a 1D reduction along x, set Ny = 1, use full left/right electrodes, and set top/bottom thermal flux to zero. Keep Ly and depth positive: cross-section = Ly × depth.</p><div class="info-block"><b>Planar 2D</b><p>The specified depth converts current density to amperes and heat flux to watts. It is constant throughout the domain.</p></div></div></div></section>
 <section id="materials" role="tabpanel" aria-labelledby="tab-materials" class="panel" hidden><div class="section-head"><div><h2>Material library</h2><p>Properties at 300 K. Each grid cell references one material.</p></div><button id="addMaterial" class="secondary">+ Add material</button></div><fieldset class="settings"><div id="materialCards" class="material-cards"></div></fieldset><div class="info-block"><b>Temperature-dependent transport</b><p>ρₑ(T) = [1 + β(T − 300)] / σ₃₀₀ &nbsp; · &nbsp; α(T) = α₃₀₀ + α′(T − 300). The solver includes Joule, Seebeck, Peltier and Thomson effects. Preset values are illustrative.</p></div></section>
 <section id="boundaries" role="tabpanel" aria-labelledby="tab-boundaries" class="panel" hidden><div class="two-col"><div class="card"><h2>Electrical electrodes</h2><p class="sub">Remaining boundary nodes are electrically insulated.</p><fieldset class="settings"><label>Control mode<select id="electricalKind"><option value="current">Total current · A</option><option value="voltage">Sink voltage · V</option><option value="open_circuit">Open circuit · net current = 0</option></select></label><div class="grid3"><label>DC bias<input id="bias" type="number" step="any"></label><label>AC peak<input id="amplitude" type="number" step="any"></label><label>Phase <span>°</span><input id="phase" type="number" step="any"></label></div><div id="electrodes"></div></fieldset><div class="info-block"><b>Equipotential contacts</b><p>The source electrode is at 0 V. In current mode, the sink voltage adjusts to deliver the specified total current. Current density is free to vary across an electrode. Electrode ranges run bottom→top on vertical edges, and left→right on horizontal edges.</p></div></div><div class="card"><h2>Thermal boundaries</h2><fieldset class="settings"><div id="thermalCards"></div></fieldset><p class="note">Flux is total heat flux, including Peltier, positive outward. Zero flux is adiabatic. Convection value is ambient temperature. Fixed-temperature sides meeting at a corner must agree.</p></div></div></section>
 <section id="solver" role="tabpanel" aria-labelledby="tab-solver" class="panel" hidden><div class="two-col"><div class="card"><h2>Simulation settings</h2><fieldset class="settings"><div class="grid2"><label>Mode<select id="mode"><option value="periodic">Periodic · DC to 3ω</option><option value="steady">Steady · DC only</option></select></label><label>Frequency <span>Hz</span><input id="frequency" type="number" step="any" min="0" required></label><label>Time steps per period<select id="samples"><option>64</option><option>128</option><option>256</option><option>512</option><option>1024</option></select></label><label>Maximum cycles<input id="maxPeriods" type="number" min="3" max="1000"></label></div></fieldset><p class="note">Steady mode uses only the DC biases. Start with a coarse mesh; refine the mesh and time steps to check your result, especially at 3ω.</p></div><div class="card"><h2>The numerical model</h2><div class="equation">J = −σ (∇V + α∇T)<br>∇ · J = 0<br>q = αTJ − k∇T<br>ρCp ∂T/∂t = −∇ · q − J · ∇V</div><p class="note">Conservative, grid-aligned nodal control volumes; scalar isotropic materials; perfect interfaces. Electrical and thermal systems use matrix-free conjugate gradients. Nonlinear coupling uses Picard iterations; periodic integration uses BDF2.</p><p class="note">No contact resistance, electrical capacitance, inductance, radiation, or front/back surface heat loss. The app supports up to 1600 nodes; practical compute time depends strongly on the case.</p></div></div></section>
@@ -79,7 +79,7 @@
 (function(TE){
 class Mesh2D {
  constructor({nx,ny,lx,ly,depth=1,materialMap}) {
-  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=2,'Use at least 2 cells in each direction.');
+  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=1,'Use at least 2 cells along x and 1 along y.');
   TE.assert((nx+1)*(ny+1)<=1600,'Maximum 1600 nodes in this browser version.');
   TE.assert([lx,ly,depth].every(v=>Number.isFinite(v)&&v>0),'Dimensions and depth must be positive.');
   Object.assign(this,{nx,ny,lx,ly,depth});this.dx=lx/nx;this.dy=ly/ny;this.n=(nx+1)*(ny+1);
@@ -277,7 +277,7 @@ TE.Solver2D=Solver2D;
   if(!object(c))return [{path:'model',message:'The model must be a JSON object.'}];
   if(!['steady','periodic'].includes(c.mode))add('mode','Select steady or periodic mode.');
   const periodic=c.mode==='periodic';
-  const nxOK=integer(c.nx,'nx',2),nyOK=integer(c.ny,'ny',2);
+  const nxOK=integer(c.nx,'nx',2),nyOK=integer(c.ny,'ny',1);
   if(nxOK&&nyOK&&(c.nx+1)*(c.ny+1)>1600){add('nx','The mesh may contain at most 1600 nodes.');add('ny','Reduce Nx or Ny to stay at or below 1600 nodes.');}
   const lxOK=positive(c.lx,'lx'),lyOK=positive(c.ly,'ly'),depthOK=positive(c.depth,'depth');
   if(nxOK&&nyOK&&lxOK&&lyOK&&depthOK){const dx=c.lx/c.nx,dy=c.ly/c.ny;for(const v of [dx,dy,dx*dy*c.depth/4,dx*c.depth/2,dy*c.depth/2,c.lx*c.ly*c.depth])if(!Number.isFinite(v)||v<=0){add('depth','Dimensions produce zero or overflowing cell volumes/areas. Use numerically representable dimensions.');break;}}
@@ -414,7 +414,7 @@ TE.run2D=(c,progress,checkpoint)=>{const s=TE.from2DConfig(c);
  };
  TE.remeshConfig=(config,{nx,ny,lx,ly,depth})=>{
   // Validate before allocating or mutating the displayed model.
-  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=2,'Elements along x and y must be integers of at least 2.');
+  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=1,'Element counts must be integers: Nx ≥ 2 and Ny ≥ 1.');
   TE.assert((nx+1)*(ny+1)<=1600,`Requested mesh: ${nx*ny} elements, ${(nx+1)*(ny+1)} nodes. The browser limit is 1600 nodes; reduce Nx or Ny.`);
   TE.assert([lx,ly,depth].every(v=>Number.isFinite(v)&&v>0),'Dimensions and depth must be positive.');
   const next={...config,nx,ny,lx,ly,depth};
@@ -488,7 +488,7 @@ TE.run2D=(c,progress,checkpoint)=>{const s=TE.from2DConfig(c);
 (function(TE){
 class Mesh2D {
  constructor({nx,ny,lx,ly,depth=1,materialMap}) {
-  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=2,'Use at least 2 cells in each direction.');
+  TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=1,'Use at least 2 cells along x and 1 along y.');
   TE.assert((nx+1)*(ny+1)<=1600,'Maximum 1600 nodes in this browser version.');
   TE.assert([lx,ly,depth].every(v=>Number.isFinite(v)&&v>0),'Dimensions and depth must be positive.');
   Object.assign(this,{nx,ny,lx,ly,depth});this.dx=lx/nx;this.dy=ly/ny;this.n=(nx+1)*(ny+1);
@@ -686,7 +686,7 @@ TE.Solver2D=Solver2D;
   if(!object(c))return [{path:'model',message:'The model must be a JSON object.'}];
   if(!['steady','periodic'].includes(c.mode))add('mode','Select steady or periodic mode.');
   const periodic=c.mode==='periodic';
-  const nxOK=integer(c.nx,'nx',2),nyOK=integer(c.ny,'ny',2);
+  const nxOK=integer(c.nx,'nx',2),nyOK=integer(c.ny,'ny',1);
   if(nxOK&&nyOK&&(c.nx+1)*(c.ny+1)>1600){add('nx','The mesh may contain at most 1600 nodes.');add('ny','Reduce Nx or Ny to stay at or below 1600 nodes.');}
   const lxOK=positive(c.lx,'lx'),lyOK=positive(c.ly,'ly'),depthOK=positive(c.depth,'depth');
   if(nxOK&&nyOK&&lxOK&&lyOK&&depthOK){const dx=c.lx/c.nx,dy=c.ly/c.ny;for(const v of [dx,dy,dx*dy*c.depth/4,dx*c.depth/2,dy*c.depth/2,c.lx*c.ly*c.depth])if(!Number.isFinite(v)||v<=0){add('depth','Dimensions produce zero or overflowing cell volumes/areas. Use numerically representable dimensions.');break;}}
@@ -860,7 +860,7 @@ function validateUI(){
  }
  if(!issues.length){try{
   let draft=read();const g=geometryInput();
-  if(Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=2&&(g.nx+1)*(g.ny+1)<=1600)draft=TE.remeshConfig(draft,{...g,lx:config.lx,ly:config.ly,depth:config.depth});
+  if(Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=1&&(g.nx+1)*(g.ny+1)<=1600)draft=TE.remeshConfig(draft,{...g,lx:config.lx,ly:config.ly,depth:config.depth});
   Object.assign(draft,g);issues.push(...TE.validate2DConfig(draft));
  }catch(e){issues.push({path:'model',message:e.message});}}
  for(const issue of issues)for(const e of issue.elements||validationTargets(issue.path)){if(!e)continue;e.setCustomValidity(issue.message);e.setAttribute('aria-invalid','true');e.title=issue.message;}
@@ -872,8 +872,8 @@ function validateUI(){
 function geometryInput(){return {nx:num('nx'),ny:num('ny'),lx:num('lx')/1000,ly:num('ly')/1000,depth:num('depth')/1000};}
 function meshChanged(g){return g.nx!==config.nx||g.ny!==config.ny||Math.abs(g.lx-config.lx)>1e-14||Math.abs(g.ly-config.ly)>1e-14||Math.abs(g.depth-config.depth)>1e-14;}
 function meshPreview(){
- try{const g=geometryInput(),valid=Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=2;
-  $('meshSummary').textContent=valid?`${g.nx} × ${g.ny} = ${g.nx*g.ny} elements / ${(g.nx+1)*(g.ny+1)} nodes`:'Enter whole-number element counts of at least 2.';
+ try{const g=geometryInput(),valid=Number.isInteger(g.nx)&&Number.isInteger(g.ny)&&g.nx>=2&&g.ny>=1;
+  $('meshSummary').textContent=valid?`${g.nx} × ${g.ny} = ${g.nx*g.ny} elements / ${(g.nx+1)*(g.ny+1)} nodes`:'Enter whole-number counts: Nx ≥ 2 and Ny ≥ 1.';
   $('meshPending').textContent=valid&&(g.nx+1)*(g.ny+1)>1600?'Too large: maximum 1600 nodes.':meshChanged(g)?'Pending change — Apply mesh, Run simulation or Export model will apply it.':'Mesh is up to date.';
  }catch{$('meshSummary').textContent='Enter valid dimensions and element counts.';$('meshPending').textContent='';}
 }
