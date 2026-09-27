@@ -1,7 +1,7 @@
 # Validation of the 2D conversion
 
-62 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
-The tests use the same core source embedded in `index.html`.
+70 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
+The tests use the same numerical core shipped in assets/core.js and the embedded worker.
 
 | Check | Acceptance |
 |---|---|
@@ -86,7 +86,7 @@ npx playwright install chromium
 node tests/browser.spec.cjs
 ```
 
-That browser test is not counted among the 62 passed tests. It covers tab switching,
+That browser test is not counted among the 70 passed tests. It covers tab switching,
 a Seebeck run, a nonlinear harmonic run, result export, cancellation, page errors
 and a narrow viewport.
 
@@ -220,3 +220,23 @@ stationary/periodic visibility, electrical DC zeroing without thermal AC loss,
 thermal-only periodic forcing, open-circuit drive suppression and h=0 convection.
 The source UI functions are tested with controlled form elements, not a real
 browser. All local script assets are compiled and worker/export checks pass.
+
+## Surface UI and layered example review
+
+The complete 70-test suite passes (validation.txt). The numerical solver is unchanged.
+Analytical Seebeck, Joule, Peltier, Thomson, 2D heat-flow, energy conservation,
+spatial/time convergence and nonlinear 3ω regressions were rerun.
+Two new tests cover selected-time 2D field extraction and the actual default
+Cu/BiTe run: convergence, prescribed terminal current, transverse temperature
+symmetry within 1E-7 K, and suppression of insignificant DC arrows.
+
+An independent execution of that same default model measured a maximum transverse
+temperature difference of 1.0842E-9 K, maximum DC current density of 1.6713E-6 A/m²,
+and fundamental current density of 1E5 A/m² (layered-review.json).
+The horizontal asymmetry is expected: different Cu/BiTe transport properties,
+a fixed-temperature left boundary and a convection right boundary. Previously,
+normalized arrows exaggerated numerical residue in the nearly-zero DC current.
+The new display threshold changes no solver values or exported data.
+
+DC summary voltage now retains its sign and no longer labels it as peak amplitude.
+No actual-browser layout, download or interaction verification is claimed.

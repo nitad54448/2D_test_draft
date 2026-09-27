@@ -4,8 +4,10 @@ test('decimal display removes conversion noise without erasing small signals',()
  assert.equal(TE.formatInputNumber(.19999999999),'0.2');
  assert.equal(TE.formatInputNumber(2e-7*1e6),'0.2');
  assert.equal(TE.formatInputNumber(.1+.2),'0.3');
- assert.equal(TE.formatInputNumber(2e-14),'2e-14');
+ assert.equal(TE.formatInputNumber(2e-14),'2E-14');
  assert.equal(TE.formatInputNumber(20),'20');
+ assert.equal(TE.formatInputNumber(5000000),'5E6');
+ assert.equal(TE.formatInputNumber(58000000),'5.8E7');
 });
 test('raw precision survives formatting, and a changed field takes the entered value',()=>{
  const e={value:'',dataset:{}},raw=.123456789012345;

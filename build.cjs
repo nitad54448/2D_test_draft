@@ -12,5 +12,5 @@ let html=read('src/index.template.html').replace('/*STYLE*/',()=>read('src/style
  .replace('<script>/*CORE*/</script>',()=>'<script src="assets/startup.js"></script><script src="assets/core.js"></script><script src="assets/exports.js"></script>')
  .replace('/*EQUATIONS*/',()=>context.TE.equationGuide.map(p=>p.html).join(''))
  .replace('/*WORKER*/',()=>worker).replace('<script>/*APP*/</script>','<script src="assets/app.js"></script>');
-html=html.replace('</footer>','<span>Build: automatic-solver-5</span></footer>');
+html=html.replace('</footer>','<span>Build: surface-review-6</span></footer>');
 fs.writeFileSync(path.join(__dirname,'index.html'),html);console.log('Built separate-script app:',Buffer.byteLength(html),'HTML bytes; all four assets syntax-checked.');

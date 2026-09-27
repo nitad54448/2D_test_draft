@@ -377,7 +377,9 @@ TE.run2D=(c,progress,checkpoint)=>{const s=TE.from2DConfig(c);
 (function(TE){
  TE.formatInputNumber=value=>{
   if(!Number.isFinite(value))return String(value);
-  return String(Number(value.toPrecision(10)));
+  const rounded=Number(value.toPrecision(10));
+  if(rounded!==0&&(Math.abs(rounded)>=1e4||Math.abs(rounded)<1e-3))return rounded.toExponential().replace('e+','E').replace('e','E');
+  return String(rounded);
  };
  TE.setNumberInput=(element,value)=>{
   const display=TE.formatInputNumber(value);
@@ -428,6 +430,22 @@ TE.run2D=(c,progress,checkpoint)=>{const s=TE.from2DConfig(c);
   if(c.electrical.kind!=='open_circuit'&&ac(c.electrical.value))return 'periodic';
   if(Object.values(c.thermal).some(b=>ac(b.value)&&(b.kind!=='convection'||b.h>0)))return 'periodic';
   return 'steady';
+ };
+})(globalThis.TE);
+
+(function(TE){
+ TE.surfaceField=(r,key,sample=0)=>{
+  TE.assert(['temperature','voltage','Jx','Jy','J','qx','qy'].includes(key),'Unknown surface field.');
+  const periodic=r.method!=='steady',c=r.config;TE.assert(Number.isInteger(sample)&&sample>=0&&sample<(periodic?r.samples:1),'Invalid surface sample.');
+  const get=k=>periodic?r[k][sample]:r[k],nodal=['temperature','voltage'].includes(key);
+  const raw=key==='J'?get('Jx').map((v,i)=>Math.hypot(v,get('Jy')[i])):get(key);
+  const cells=nodal?Array.from({length:c.nx*c.ny},(_,k)=>{const i=k%c.nx,j=Math.floor(k/c.nx),a=j*(c.nx+1)+i;return (raw[a]+raw[a+1]+raw[a+c.nx+1]+raw[a+c.nx+2])/4;}):[...raw];
+  return {cells,nodal,unit:key==='temperature'?'K':key==='voltage'?'V':['qx','qy'].includes(key)?'W/m²':'A/m²'};
+ };
+ TE.arrowNoiseFloor=r=>{
+  let reference=0;const p=r.method!=='steady';if(p){for(let n=0;n<r.harmonics.Jx.length;n++)for(let i=0;i<r.harmonics.Jx[n].length;i++){const a=r.harmonics.Jx[n][i],b=r.harmonics.Jy[n][i];reference=Math.max(reference,Math.hypot(a.re,a.im,b.re,b.im));}}
+  else for(let i=0;i<r.Jx.length;i++)reference=Math.max(reference,Math.hypot(r.Jx[i],r.Jy[i]));
+  return Math.max(1e-12,reference*1e-8);
  };
 })(globalThis.TE);
 

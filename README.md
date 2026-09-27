@@ -440,15 +440,13 @@ phase and time integration settings are ignored in DC. The new **DC · Joule
 heating / spatial profile** preset provides a one-row example with a 0.2 A drive.
 This is a stationary DC solution, not a DC switch-on transient.
 
-Results now includes **Spatial profile · DC or selected time**. Choose temperature,
-voltage, current components/magnitude or heat flux, X/Y direction and transverse
-cut position. The cut snaps to the nearest nodal line (T/V) or cell centers (J/q),
-with its actual position shown. In periodic runs, the time slider selects a stored
-sample of the last saved complete cycle, including all resolved harmonics. It
-shows time, phase and sample number. **Profile CSV** exports the displayed cut,
-SI coordinates, units, time and convergence status. The existing full-results ZIP
-already contains all data from which these profiles are extracted; the report
-continues to show its existing full harmonic maps and probe plots.
+Results includes **Spatial field · selected time**, a 2D map of temperature,
+voltage, current components/magnitude or heat flux. For periodic runs, the slider
+selects a stored sample of the last saved complete cycle. Temperature and voltage
+are averaged over each cell's four corners for display; exports retain raw nodal
+values. **Export data · all fields** downloads the complete results ZIP: all field
+histories, DC/1ω/2ω/3ω components, coordinates, terminal values, model and report.
+DC results hide the time charts; signed terminal voltage remains in the summary.
 
 Solver includes an expandable **Detailed equations, boundary conditions and
 numerical method** guide: constitutive laws, charge/energy conservation, Joule,
@@ -489,3 +487,16 @@ continues to honor explicit configuration mode; automatic selection is a UI feat
 
 14 targeted controls/profile/worker/export tests pass; see
 `automatic-solver-validation.txt`. Full browser interaction testing remains pending.
+
+## Surface display and Cu/BiTe review
+
+Large material input values use scientific notation (for example 5.8E7); unchanged
+inputs retain full raw precision. Tabs have larger labels without number prefixes.
+Geometry order is Width X, Width Y, Elements X, Elements Y, out-of-plane depth.
+
+The default layered example is deliberately asymmetric along X: copper and BiTe
+have different conductivities, the left edge is fixed at 300 K, and the right edge
+uses convection. The Y temperature variation is below 1E-7 K in the regression.
+Almost-zero DC current arrows formerly magnified numerical residue. Arrows now
+hide values below 1E-8 of the strongest current harmonic, with a 1E-12 A/m² floor.
+This is a visualization threshold only; raw numerical values remain in exports.

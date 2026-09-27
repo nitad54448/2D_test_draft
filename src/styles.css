@@ -9,3 +9,5 @@
 #applyGrid.mesh-pending{border-color:var(--accent);color:var(--accent)}#applyGrid.mesh-flash{animation:mesh-flash .7s ease-out 1}@keyframes mesh-flash{0%,100%{box-shadow:0 0 0 0 transparent}45%{background:#665039;box-shadow:0 0 0 5px #f0ad7244}}@media(prefers-reduced-motion:reduce){#applyGrid.mesh-flash{animation:none}}
 
 .solver-method{color:var(--teal);font-size:22px;margin:20px 0;font-weight:550}
+
+.tabs button{font:16px system-ui;padding:15px 18px}.tabs button span{font-size:16px;margin-left:0}@media(max-width:720px){.tabs button{padding:12px 10px}.tabs button span{font-size:15px;margin-left:0}}
