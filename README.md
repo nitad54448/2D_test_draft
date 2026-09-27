@@ -353,11 +353,11 @@ unrecognized numerical keys to GUI configuration expecting them to be used.
 Run:
 
 ```bash
-node --test tests/solver.test.cjs tests/worker.test.cjs tests/ui-helpers.test.cjs tests/validation.test.cjs
+node --test tests/solver.test.cjs tests/worker.test.cjs tests/ui-helpers.test.cjs tests/validation.test.cjs tests/review.test.cjs
 ```
 
-All 50 automated tests passed on this package: 21 numerical tests, four packaging/
-worker checks, five precision/remeshing checks and 20 input-validation checks.
+All 54 automated tests passed on this package: 21 numerical tests, four packaging/
+worker checks, five precision/remeshing checks 20 input-validation checks and four review regression checks.
 They cover analytical 2D solutions, current spreading, circulating currents in
 open circuit, interface Peltier, Thomson, energy balances, mesh/time refinement,
 agreement with the corrected 1D solver, and rejection of invalid configurations.
@@ -373,3 +373,13 @@ approximation. It does not support holes, curved or unstructured meshes, variabl
 depth, anisotropic tensors, contact resistances, front/back surface losses,
 radiation or dynamic external electrical circuits. Material data and experimental
 agreement must be validated for the intended application.
+
+## Follow-up consistency review
+
+An omitted convection coefficient consistently defaults to zero. The linear solver
+rejects invalid tolerances/iteration limits and accepts convergence on the last
+permitted iteration. Derived densities, heat fluxes and powers must remain finite.
+Stopped-cycle plots show only sampled data, without a fabricated periodic closing
+point. Switching to DC/current magnitude preserves the selected harmonic display
+mode. Periodic JSON includes `cycleStartTime` in seconds; `time` remains relative
+to that cycle. The four new regression tests are in `tests/review.test.cjs`.

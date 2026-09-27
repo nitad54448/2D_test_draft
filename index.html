@@ -112,6 +112,10 @@ TE.Mesh2D=Mesh2D;
 (function(TE){
 // Matrix-free symmetric graph Laplacian + positive diagonal. Dirichlet eliminated.
 TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,initial}={})=>{
+ TE.assert(Number.isFinite(rtol)&&rtol>0&&rtol<1,'Linear relative tolerance must satisfy 0 < rtol < 1.');
+ TE.assert(Number.isInteger(maxIter)&&maxIter>0,'Linear iteration limit must be a positive integer.');
+ TE.assert(conductance.length===mesh.links.length&&conductance.every(g=>Number.isFinite(g)&&g>0),'Invalid face conductance.');
+ TE.assert(!initial||(initial.length===mesh.n&&initial.every(Number.isFinite)),'Invalid linear initial guess.');
  TE.assert(rhs.length===mesh.n&&diagonal.length===mesh.n&&rhs.every(Number.isFinite)&&diagonal.every(v=>Number.isFinite(v)&&v>=0),'Linear system coefficients/RHS must be finite with nonnegative diagonal.');
  for(const [i,v]of fixed)TE.assert(Number.isInteger(i)&&i>=0&&i<mesh.n&&Number.isFinite(v),'Invalid fixed boundary value.');
  const n=mesh.n,idx=new Int32Array(n).fill(-1),free=[];
@@ -138,7 +142,7 @@ TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,init
   const a=rz/den;for(let i=0;i<nf;i++){x[i]+=a*p[i];r[i]-=a*Ap[i];}
   z=Float64Array.from(r,(v,i)=>v/D[i]);const next=dot(r,z),beta=next/rz;for(let i=0;i<nf;i++)p[i]=z[i]+beta*p[i];rz=next;
  }
- TE.assert(iteration<maxIter&&x.every(Number.isFinite)&&r.every(Number.isFinite),'Sparse linear solver did not converge to a finite result.');
+ TE.assert(Math.sqrt(dot(r,r))<=target&&x.every(Number.isFinite)&&r.every(Number.isFinite),'Sparse linear solver did not converge to a finite result.');
  free.forEach((node,i)=>out[node]=x[i]);return Array.from(out);
 };
 })(globalThis.TE);
@@ -166,7 +170,7 @@ class Solver2D {
    if(b.kind==='temperature'||b.kind==='convection')TE.assert(v>0,side+' temperature must remain strictly above 0 K.');
    for(const {node,A} of faces){if(b.kind==='temperature'){TE.assert(v>0,'Temperature must be >0 K.');if(fixed.has(node))TE.assert(Math.abs(fixed.get(node)-v)<1e-8,'Conflicting temperatures at a corner. Use compatible boundary temperatures.');fixed.set(node,v);}
     if(b.kind==='flux'){rhs[node]-=v*A;flux[node]+=v*A;}
-    if(b.kind==='convection'){diag[node]+=b.h*A;rhs[node]+=b.h*A*v;}
+    if(b.kind==='convection'){diag[node]+=(b.h??0)*A;rhs[node]+=(b.h??0)*A*v;}
    }
   }return {fixed,diag,rhs,flux};
  }
@@ -187,7 +191,7 @@ class Solver2D {
    terminalVoltage=(target-Ibase)/Iunit;V=base.map((v,i)=>v+terminalVoltage*unit[i]);
   }
   TE.assert(V.every(Number.isFinite),'Voltage exceeds the finite numerical range. Check excitation and material values.');
-  const I=current(V);TE.assert(I.every(Number.isFinite),'Current exceeds the finite numerical range.');return {V,I,terminalVoltage,current:terminal(I)};
+  const I=current(V),terminalCurrent=terminal(I);TE.assert(I.every(Number.isFinite)&&Number.isFinite(terminalCurrent)&&Number.isFinite(terminalVoltage),'Current or terminal voltage exceeds the finite numerical range.');return {V,I,terminalVoltage,current:terminalCurrent};
  }
  balance(T,t){
   const m=this.mesh,{p,cap}=this.properties(T),elect=this.electric(T,p,t),source=Array(m.n).fill(0),q=[],work=[];
@@ -221,9 +225,10 @@ class Solver2D {
   m.cells.forEach(c=>{const [a,bb,cc,d]=c.links;Jx.push((b.I[a]+b.I[bb])/(m.dy*m.depth));Jy.push((b.I[cc]+b.I[d])/(m.dx*m.depth));qx.push((b.q[a]+b.q[bb])/(m.dy*m.depth));qy.push((b.q[cc]+b.q[d])/(m.dx*m.depth));});
   const bc=this.thermal(t),res=b.source.map((v,i)=>v+bc.rhs[i]-bc.diag[i]*T[i]);
   m.links.forEach((e,k)=>{const v=b.p[k].k*(T[e.a]-T[e.b]);res[e.a]-=v;res[e.b]+=v;});
-  let heatOut=0;for(const [side,faces] of Object.entries(m.sides)){const c=this.boundaries[side],v=TE.signal2D(c.value,t,this.frequency);if(c.kind!=='temperature')for(const {node,A} of faces)heatOut+=A*(c.kind==='flux'?v:c.h*(T[node]-v));}
+  let heatOut=0;for(const [side,faces] of Object.entries(m.sides)){const c=this.boundaries[side],v=TE.signal2D(c.value,t,this.frequency);if(c.kind!=='temperature')for(const {node,A} of faces)heatOut+=A*(c.kind==='flux'?v:(c.h??0)*(T[node]-v));}
   for(const [i] of bc.fixed)heatOut+=res[i];
   const electricalPower=-b.current*b.terminalVoltage;
+  TE.assert([...Jx,...Jy,...qx,...qy,electricalPower,heatOut,...res].every(Number.isFinite),'Derived current density, heat flux or power exceeds the finite numerical range.');
   return {temperature:[...T],voltage:b.V,Jx,Jy,qx,qy,current:b.current,terminalVoltage:b.terminalVoltage,electricalPower,
    energyResidual:steady?heatOut-electricalPower:null,freeResidualWatts:Math.max(0,...res.filter((_,i)=>!bc.fixed.has(i)).map(Math.abs))};
  }
@@ -242,7 +247,7 @@ class Solver2D {
    const traces={},records=history.map((row,i)=>this.snapshot(row,((cycle-1)*samples+i)*dt));
    for(const key of ['temperature','voltage','Jx','Jy','qx','qy','current','terminalVoltage'])traces[key]=records.map(r=>r[key]);
    const harmonics={};for(const [key,value]of Object.entries(traces))harmonics[key]=TE.extractHarmonics(value,3);
-   return {...traces,harmonics,time:Array.from({length:samples},(_,i)=>i*dt),frequency,samples,periods:cycle,periodicError:Number.isFinite(error)?error:null,finalTemperature:[...T],method:'BDF2 / nonlinear Picard / matrix-free CG',converged};
+   return {...traces,harmonics,time:Array.from({length:samples},(_,i)=>i*dt),frequency,samples,periods:cycle,cycleStartTime:(cycle-1)/frequency,periodicError:Number.isFinite(error)?error:null,finalTemperature:[...T],method:'BDF2 / nonlinear Picard / matrix-free CG',converged};
   };
   for(cycle=1;cycle<=maxPeriods;cycle++){
    history=[];
@@ -401,6 +406,12 @@ TE.run2D=(c,progress,checkpoint)=>{const s=TE.from2DConfig(c);
   const raw=element.dataset.rawNumber;
   return TE.finite(Number(raw!==undefined&&element.value===element.dataset.displayNumber?raw:element.value),'Numerical value');
  };
+ TE.historyForPlot=(result,values)=>{
+  const time=result.time.map(v=>v*1000),y=[...values];
+  // Only a converged periodic history may be closed back to its first sample.
+  if(result.converged){time.push(1000/result.frequency);y.push(values[0]);}
+  return {time,values:y};
+ };
  TE.remeshConfig=(config,{nx,ny,lx,ly,depth})=>{
   // Validate before allocating or mutating the displayed model.
   TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=2,'Elements along x and y must be integers of at least 2.');
@@ -510,6 +521,10 @@ TE.Mesh2D=Mesh2D;
 (function(TE){
 // Matrix-free symmetric graph Laplacian + positive diagonal. Dirichlet eliminated.
 TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,initial}={})=>{
+ TE.assert(Number.isFinite(rtol)&&rtol>0&&rtol<1,'Linear relative tolerance must satisfy 0 < rtol < 1.');
+ TE.assert(Number.isInteger(maxIter)&&maxIter>0,'Linear iteration limit must be a positive integer.');
+ TE.assert(conductance.length===mesh.links.length&&conductance.every(g=>Number.isFinite(g)&&g>0),'Invalid face conductance.');
+ TE.assert(!initial||(initial.length===mesh.n&&initial.every(Number.isFinite)),'Invalid linear initial guess.');
  TE.assert(rhs.length===mesh.n&&diagonal.length===mesh.n&&rhs.every(Number.isFinite)&&diagonal.every(v=>Number.isFinite(v)&&v>=0),'Linear system coefficients/RHS must be finite with nonnegative diagonal.');
  for(const [i,v]of fixed)TE.assert(Number.isInteger(i)&&i>=0&&i<mesh.n&&Number.isFinite(v),'Invalid fixed boundary value.');
  const n=mesh.n,idx=new Int32Array(n).fill(-1),free=[];
@@ -536,7 +551,7 @@ TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,init
   const a=rz/den;for(let i=0;i<nf;i++){x[i]+=a*p[i];r[i]-=a*Ap[i];}
   z=Float64Array.from(r,(v,i)=>v/D[i]);const next=dot(r,z),beta=next/rz;for(let i=0;i<nf;i++)p[i]=z[i]+beta*p[i];rz=next;
  }
- TE.assert(iteration<maxIter&&x.every(Number.isFinite)&&r.every(Number.isFinite),'Sparse linear solver did not converge to a finite result.');
+ TE.assert(Math.sqrt(dot(r,r))<=target&&x.every(Number.isFinite)&&r.every(Number.isFinite),'Sparse linear solver did not converge to a finite result.');
  free.forEach((node,i)=>out[node]=x[i]);return Array.from(out);
 };
 })(globalThis.TE);
@@ -564,7 +579,7 @@ class Solver2D {
    if(b.kind==='temperature'||b.kind==='convection')TE.assert(v>0,side+' temperature must remain strictly above 0 K.');
    for(const {node,A} of faces){if(b.kind==='temperature'){TE.assert(v>0,'Temperature must be >0 K.');if(fixed.has(node))TE.assert(Math.abs(fixed.get(node)-v)<1e-8,'Conflicting temperatures at a corner. Use compatible boundary temperatures.');fixed.set(node,v);}
     if(b.kind==='flux'){rhs[node]-=v*A;flux[node]+=v*A;}
-    if(b.kind==='convection'){diag[node]+=b.h*A;rhs[node]+=b.h*A*v;}
+    if(b.kind==='convection'){diag[node]+=(b.h??0)*A;rhs[node]+=(b.h??0)*A*v;}
    }
   }return {fixed,diag,rhs,flux};
  }
@@ -585,7 +600,7 @@ class Solver2D {
    terminalVoltage=(target-Ibase)/Iunit;V=base.map((v,i)=>v+terminalVoltage*unit[i]);
   }
   TE.assert(V.every(Number.isFinite),'Voltage exceeds the finite numerical range. Check excitation and material values.');
-  const I=current(V);TE.assert(I.every(Number.isFinite),'Current exceeds the finite numerical range.');return {V,I,terminalVoltage,current:terminal(I)};
+  const I=current(V),terminalCurrent=terminal(I);TE.assert(I.every(Number.isFinite)&&Number.isFinite(terminalCurrent)&&Number.isFinite(terminalVoltage),'Current or terminal voltage exceeds the finite numerical range.');return {V,I,terminalVoltage,current:terminalCurrent};
  }
  balance(T,t){
   const m=this.mesh,{p,cap}=this.properties(T),elect=this.electric(T,p,t),source=Array(m.n).fill(0),q=[],work=[];
@@ -619,9 +634,10 @@ class Solver2D {
   m.cells.forEach(c=>{const [a,bb,cc,d]=c.links;Jx.push((b.I[a]+b.I[bb])/(m.dy*m.depth));Jy.push((b.I[cc]+b.I[d])/(m.dx*m.depth));qx.push((b.q[a]+b.q[bb])/(m.dy*m.depth));qy.push((b.q[cc]+b.q[d])/(m.dx*m.depth));});
   const bc=this.thermal(t),res=b.source.map((v,i)=>v+bc.rhs[i]-bc.diag[i]*T[i]);
   m.links.forEach((e,k)=>{const v=b.p[k].k*(T[e.a]-T[e.b]);res[e.a]-=v;res[e.b]+=v;});
-  let heatOut=0;for(const [side,faces] of Object.entries(m.sides)){const c=this.boundaries[side],v=TE.signal2D(c.value,t,this.frequency);if(c.kind!=='temperature')for(const {node,A} of faces)heatOut+=A*(c.kind==='flux'?v:c.h*(T[node]-v));}
+  let heatOut=0;for(const [side,faces] of Object.entries(m.sides)){const c=this.boundaries[side],v=TE.signal2D(c.value,t,this.frequency);if(c.kind!=='temperature')for(const {node,A} of faces)heatOut+=A*(c.kind==='flux'?v:(c.h??0)*(T[node]-v));}
   for(const [i] of bc.fixed)heatOut+=res[i];
   const electricalPower=-b.current*b.terminalVoltage;
+  TE.assert([...Jx,...Jy,...qx,...qy,electricalPower,heatOut,...res].every(Number.isFinite),'Derived current density, heat flux or power exceeds the finite numerical range.');
   return {temperature:[...T],voltage:b.V,Jx,Jy,qx,qy,current:b.current,terminalVoltage:b.terminalVoltage,electricalPower,
    energyResidual:steady?heatOut-electricalPower:null,freeResidualWatts:Math.max(0,...res.filter((_,i)=>!bc.fixed.has(i)).map(Math.abs))};
  }
@@ -640,7 +656,7 @@ class Solver2D {
    const traces={},records=history.map((row,i)=>this.snapshot(row,((cycle-1)*samples+i)*dt));
    for(const key of ['temperature','voltage','Jx','Jy','qx','qy','current','terminalVoltage'])traces[key]=records.map(r=>r[key]);
    const harmonics={};for(const [key,value]of Object.entries(traces))harmonics[key]=TE.extractHarmonics(value,3);
-   return {...traces,harmonics,time:Array.from({length:samples},(_,i)=>i*dt),frequency,samples,periods:cycle,periodicError:Number.isFinite(error)?error:null,finalTemperature:[...T],method:'BDF2 / nonlinear Picard / matrix-free CG',converged};
+   return {...traces,harmonics,time:Array.from({length:samples},(_,i)=>i*dt),frequency,samples,periods:cycle,cycleStartTime:(cycle-1)/frequency,periodicError:Number.isFinite(error)?error:null,finalTemperature:[...T],method:'BDF2 / nonlinear Picard / matrix-free CG',converged};
   };
   for(cycle=1;cycle<=maxPeriods;cycle++){
    history=[];
@@ -872,7 +888,7 @@ function chart(id,x,y,label){const el=$(id),W=el.clientWidth||450,H=210,L=65,R=1
 function drawResults(){if(!result||$('results').hidden)return;const r=result,c=r.config,periodic=r.method!=='steady',n=periodic?Number($('harmonic').value):0,field=$('field').value,representation=$('representation').value;const valuesFor=key=>periodic?r.harmonics[key][n]:r[key].map(v=>({re:v,im:0}));
  const vecX=valuesFor('Jx'),vecY=valuesFor('Jy');let values;
  if(field==='J'){values=vecX.map((z,i)=>Math.hypot(amp(z),amp(vecY[i])));$('representation').disabled=true;}else{const z=valuesFor(field);values=z.map(z=>n?(representation==='phase'?phase(z):representation==='real'?z.re:amp(z)):z.re);$('representation').disabled=!n;}
- $('representation').value=field==='J'?'amplitude':!n?'real':representation;
+ // Keep the user's harmonic representation when temporarily viewing DC or |J|.
  $('representationHelp').textContent=field==='J'?'Current magnitude uses the vector norm; phase and real-part selection do not apply.':!n?'DC is the signed mean value. Select 1ω, 2ω or 3ω to view peak amplitude, phase or real part.':'Amplitude is the peak magnitude of this harmonic (not RMS). Phase and real part use the cosine reference.';
  const nodeField=field==='temperature'||field==='voltage',isPhase=n&&representation==='phase'&&field!=='J',unit=isPhase?'°':field==='temperature'?'K':field==='voltage'?'V':'A/m²';
  let lo=values.reduce((a,b)=>Math.min(a,b),Infinity),hi=values.reduce((a,b)=>Math.max(a,b),-Infinity);if(isPhase){lo=-180;hi=180;}
@@ -886,7 +902,7 @@ function drawResults(){if(!result||$('results').hidden)return;const r=result,c=r
  $('fieldCaption').textContent=`${$('field').selectedOptions[0].text} · ${n?n+'ω':'DC'}${n?' · '+(field==='J'?'vector amplitude':representation):''} · ${nodeField?'nodal values averaged per cell':'cell-centered field'}`;
  $('vectorNote').textContent='Arrows: real current phasor at 0° (direction and relative magnitude). White = source electrode; pink = sink. Click to move the probe.';
  $('probeLabel').textContent=`x = ${fmt(pi*c.lx/c.nx*1000)} mm, y = ${fmt(pj*c.ly/c.ny*1000)} mm`;
- if(periodic){const t=[...r.time.map(v=>v*1000),1000/r.frequency];chart('probeChart',t,[...r.temperature.map(T=>T[probe]),r.temperature[0][probe]],'Temperature · K');chart('voltageChart',t,[...r.terminalVoltage,r.terminalVoltage[0]].map(v=>v*1000),'Voltage · mV');}
+ if(periodic){const thermal=TE.historyForPlot(r,r.temperature.map(T=>T[probe])),electric=TE.historyForPlot(r,r.terminalVoltage.map(v=>v*1000));chart('probeChart',thermal.time,thermal.values,'Temperature · K');chart('voltageChart',electric.time,electric.values,'Voltage · mV');}
  else{$('probeChart').textContent=`Steady temperature: ${r.temperature[probe].toFixed(6)} K`;$('voltageChart').textContent=`Steady terminal voltage: ${r.terminalVoltage.toExponential(6)} V`;}
 }
 $('resultCanvas').onclick=e=>{if(!result||!resultFrame)return;const r=$('resultCanvas').getBoundingClientRect(),f=resultFrame,c=result.config,x=(e.clientX-r.left-f.left)/f.w,y=1-(e.clientY-r.top-f.top)/f.h;if(x<0||x>1||y<0||y>1)return;probe=Math.round(y*c.ny)*(c.nx+1)+Math.round(x*c.nx);drawResults();};

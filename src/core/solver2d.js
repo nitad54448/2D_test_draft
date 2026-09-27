@@ -21,7 +21,7 @@ class Solver2D {
    if(b.kind==='temperature'||b.kind==='convection')TE.assert(v>0,side+' temperature must remain strictly above 0 K.');
    for(const {node,A} of faces){if(b.kind==='temperature'){TE.assert(v>0,'Temperature must be >0 K.');if(fixed.has(node))TE.assert(Math.abs(fixed.get(node)-v)<1e-8,'Conflicting temperatures at a corner. Use compatible boundary temperatures.');fixed.set(node,v);}
     if(b.kind==='flux'){rhs[node]-=v*A;flux[node]+=v*A;}
-    if(b.kind==='convection'){diag[node]+=b.h*A;rhs[node]+=b.h*A*v;}
+    if(b.kind==='convection'){diag[node]+=(b.h??0)*A;rhs[node]+=(b.h??0)*A*v;}
    }
   }return {fixed,diag,rhs,flux};
  }
@@ -42,7 +42,7 @@ class Solver2D {
    terminalVoltage=(target-Ibase)/Iunit;V=base.map((v,i)=>v+terminalVoltage*unit[i]);
   }
   TE.assert(V.every(Number.isFinite),'Voltage exceeds the finite numerical range. Check excitation and material values.');
-  const I=current(V);TE.assert(I.every(Number.isFinite),'Current exceeds the finite numerical range.');return {V,I,terminalVoltage,current:terminal(I)};
+  const I=current(V),terminalCurrent=terminal(I);TE.assert(I.every(Number.isFinite)&&Number.isFinite(terminalCurrent)&&Number.isFinite(terminalVoltage),'Current or terminal voltage exceeds the finite numerical range.');return {V,I,terminalVoltage,current:terminalCurrent};
  }
  balance(T,t){
   const m=this.mesh,{p,cap}=this.properties(T),elect=this.electric(T,p,t),source=Array(m.n).fill(0),q=[],work=[];
@@ -76,9 +76,10 @@ class Solver2D {
   m.cells.forEach(c=>{const [a,bb,cc,d]=c.links;Jx.push((b.I[a]+b.I[bb])/(m.dy*m.depth));Jy.push((b.I[cc]+b.I[d])/(m.dx*m.depth));qx.push((b.q[a]+b.q[bb])/(m.dy*m.depth));qy.push((b.q[cc]+b.q[d])/(m.dx*m.depth));});
   const bc=this.thermal(t),res=b.source.map((v,i)=>v+bc.rhs[i]-bc.diag[i]*T[i]);
   m.links.forEach((e,k)=>{const v=b.p[k].k*(T[e.a]-T[e.b]);res[e.a]-=v;res[e.b]+=v;});
-  let heatOut=0;for(const [side,faces] of Object.entries(m.sides)){const c=this.boundaries[side],v=TE.signal2D(c.value,t,this.frequency);if(c.kind!=='temperature')for(const {node,A} of faces)heatOut+=A*(c.kind==='flux'?v:c.h*(T[node]-v));}
+  let heatOut=0;for(const [side,faces] of Object.entries(m.sides)){const c=this.boundaries[side],v=TE.signal2D(c.value,t,this.frequency);if(c.kind!=='temperature')for(const {node,A} of faces)heatOut+=A*(c.kind==='flux'?v:(c.h??0)*(T[node]-v));}
   for(const [i] of bc.fixed)heatOut+=res[i];
   const electricalPower=-b.current*b.terminalVoltage;
+  TE.assert([...Jx,...Jy,...qx,...qy,electricalPower,heatOut,...res].every(Number.isFinite),'Derived current density, heat flux or power exceeds the finite numerical range.');
   return {temperature:[...T],voltage:b.V,Jx,Jy,qx,qy,current:b.current,terminalVoltage:b.terminalVoltage,electricalPower,
    energyResidual:steady?heatOut-electricalPower:null,freeResidualWatts:Math.max(0,...res.filter((_,i)=>!bc.fixed.has(i)).map(Math.abs))};
  }
@@ -97,7 +98,7 @@ class Solver2D {
    const traces={},records=history.map((row,i)=>this.snapshot(row,((cycle-1)*samples+i)*dt));
    for(const key of ['temperature','voltage','Jx','Jy','qx','qy','current','terminalVoltage'])traces[key]=records.map(r=>r[key]);
    const harmonics={};for(const [key,value]of Object.entries(traces))harmonics[key]=TE.extractHarmonics(value,3);
-   return {...traces,harmonics,time:Array.from({length:samples},(_,i)=>i*dt),frequency,samples,periods:cycle,periodicError:Number.isFinite(error)?error:null,finalTemperature:[...T],method:'BDF2 / nonlinear Picard / matrix-free CG',converged};
+   return {...traces,harmonics,time:Array.from({length:samples},(_,i)=>i*dt),frequency,samples,periods:cycle,cycleStartTime:(cycle-1)/frequency,periodicError:Number.isFinite(error)?error:null,finalTemperature:[...T],method:'BDF2 / nonlinear Picard / matrix-free CG',converged};
   };
   for(cycle=1;cycle<=maxPeriods;cycle++){
    history=[];

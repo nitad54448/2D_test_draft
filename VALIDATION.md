@@ -1,6 +1,6 @@
 # Validation of the 2D conversion
 
-50 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
+54 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
 The tests use the same core source embedded in `index.html`.
 
 | Check | Acceptance |
@@ -86,7 +86,7 @@ npx playwright install chromium
 node tests/browser.spec.cjs
 ```
 
-That browser test is not counted among the 50 passed tests. It covers tab switching,
+That browser test is not counted among the 54 passed tests. It covers tab switching,
 a Seebeck run, a nonlinear harmonic run, result export, cancellation, page errors
 and a narrow viewport.
 
@@ -136,3 +136,14 @@ receives step progress and a full first-cycle result, terminates the worker, and
 checks retained fields, harmonics, configuration and `converged: false`. Existing
 analytical/convergence tests still pass. Browser layout and live timer interactions
 remain unverified in an actual browser in this environment.
+
+## Follow-up critical-error review
+
+All 54 tests pass on the rebuilt package. New regressions cover omitted convection
+h, invalid linear options, convergence on the final permitted iteration, invalid
+conductance with all nodes fixed, and honest plotting of unconverged histories.
+The review also adds finite-value guards for derived fields and terminal totals,
+preserves harmonic representation selection across DC views, and exports the
+absolute start time of each saved cycle. Existing analytical thermoelectric and
+harmonic tests pass unchanged. This review does not establish absence of all bugs;
+full browser interaction testing and experimental validation remain outstanding.

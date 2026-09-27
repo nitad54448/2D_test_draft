@@ -13,6 +13,12 @@
   const raw=element.dataset.rawNumber;
   return TE.finite(Number(raw!==undefined&&element.value===element.dataset.displayNumber?raw:element.value),'Numerical value');
  };
+ TE.historyForPlot=(result,values)=>{
+  const time=result.time.map(v=>v*1000),y=[...values];
+  // Only a converged periodic history may be closed back to its first sample.
+  if(result.converged){time.push(1000/result.frequency);y.push(values[0]);}
+  return {time,values:y};
+ };
  TE.remeshConfig=(config,{nx,ny,lx,ly,depth})=>{
   // Validate before allocating or mutating the displayed model.
   TE.assert(Number.isInteger(nx)&&Number.isInteger(ny)&&nx>=2&&ny>=2,'Elements along x and y must be integers of at least 2.');

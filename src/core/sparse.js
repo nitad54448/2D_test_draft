@@ -1,6 +1,10 @@
 (function(TE){
 // Matrix-free symmetric graph Laplacian + positive diagonal. Dirichlet eliminated.
 TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,initial}={})=>{
+ TE.assert(Number.isFinite(rtol)&&rtol>0&&rtol<1,'Linear relative tolerance must satisfy 0 < rtol < 1.');
+ TE.assert(Number.isInteger(maxIter)&&maxIter>0,'Linear iteration limit must be a positive integer.');
+ TE.assert(conductance.length===mesh.links.length&&conductance.every(g=>Number.isFinite(g)&&g>0),'Invalid face conductance.');
+ TE.assert(!initial||(initial.length===mesh.n&&initial.every(Number.isFinite)),'Invalid linear initial guess.');
  TE.assert(rhs.length===mesh.n&&diagonal.length===mesh.n&&rhs.every(Number.isFinite)&&diagonal.every(v=>Number.isFinite(v)&&v>=0),'Linear system coefficients/RHS must be finite with nonnegative diagonal.');
  for(const [i,v]of fixed)TE.assert(Number.isInteger(i)&&i>=0&&i<mesh.n&&Number.isFinite(v),'Invalid fixed boundary value.');
  const n=mesh.n,idx=new Int32Array(n).fill(-1),free=[];
@@ -27,7 +31,7 @@ TE.graphSolve=(mesh,conductance,diagonal,rhs,fixed,{rtol=2e-12,maxIter=4000,init
   const a=rz/den;for(let i=0;i<nf;i++){x[i]+=a*p[i];r[i]-=a*Ap[i];}
   z=Float64Array.from(r,(v,i)=>v/D[i]);const next=dot(r,z),beta=next/rz;for(let i=0;i<nf;i++)p[i]=z[i]+beta*p[i];rz=next;
  }
- TE.assert(iteration<maxIter&&x.every(Number.isFinite)&&r.every(Number.isFinite),'Sparse linear solver did not converge to a finite result.');
+ TE.assert(Math.sqrt(dot(r,r))<=target&&x.every(Number.isFinite)&&r.every(Number.isFinite),'Sparse linear solver did not converge to a finite result.');
  free.forEach((node,i)=>out[node]=x[i]);return Array.from(out);
 };
 })(globalThis.TE);

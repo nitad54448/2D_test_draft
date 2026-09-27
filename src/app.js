@@ -85,7 +85,7 @@ function chart(id,x,y,label){const el=$(id),W=el.clientWidth||450,H=210,L=65,R=1
 function drawResults(){if(!result||$('results').hidden)return;const r=result,c=r.config,periodic=r.method!=='steady',n=periodic?Number($('harmonic').value):0,field=$('field').value,representation=$('representation').value;const valuesFor=key=>periodic?r.harmonics[key][n]:r[key].map(v=>({re:v,im:0}));
  const vecX=valuesFor('Jx'),vecY=valuesFor('Jy');let values;
  if(field==='J'){values=vecX.map((z,i)=>Math.hypot(amp(z),amp(vecY[i])));$('representation').disabled=true;}else{const z=valuesFor(field);values=z.map(z=>n?(representation==='phase'?phase(z):representation==='real'?z.re:amp(z)):z.re);$('representation').disabled=!n;}
- $('representation').value=field==='J'?'amplitude':!n?'real':representation;
+ // Keep the user's harmonic representation when temporarily viewing DC or |J|.
  $('representationHelp').textContent=field==='J'?'Current magnitude uses the vector norm; phase and real-part selection do not apply.':!n?'DC is the signed mean value. Select 1ω, 2ω or 3ω to view peak amplitude, phase or real part.':'Amplitude is the peak magnitude of this harmonic (not RMS). Phase and real part use the cosine reference.';
  const nodeField=field==='temperature'||field==='voltage',isPhase=n&&representation==='phase'&&field!=='J',unit=isPhase?'°':field==='temperature'?'K':field==='voltage'?'V':'A/m²';
  let lo=values.reduce((a,b)=>Math.min(a,b),Infinity),hi=values.reduce((a,b)=>Math.max(a,b),-Infinity);if(isPhase){lo=-180;hi=180;}
@@ -99,7 +99,7 @@ function drawResults(){if(!result||$('results').hidden)return;const r=result,c=r
  $('fieldCaption').textContent=`${$('field').selectedOptions[0].text} · ${n?n+'ω':'DC'}${n?' · '+(field==='J'?'vector amplitude':representation):''} · ${nodeField?'nodal values averaged per cell':'cell-centered field'}`;
  $('vectorNote').textContent='Arrows: real current phasor at 0° (direction and relative magnitude). White = source electrode; pink = sink. Click to move the probe.';
  $('probeLabel').textContent=`x = ${fmt(pi*c.lx/c.nx*1000)} mm, y = ${fmt(pj*c.ly/c.ny*1000)} mm`;
- if(periodic){const t=[...r.time.map(v=>v*1000),1000/r.frequency];chart('probeChart',t,[...r.temperature.map(T=>T[probe]),r.temperature[0][probe]],'Temperature · K');chart('voltageChart',t,[...r.terminalVoltage,r.terminalVoltage[0]].map(v=>v*1000),'Voltage · mV');}
+ if(periodic){const thermal=TE.historyForPlot(r,r.temperature.map(T=>T[probe])),electric=TE.historyForPlot(r,r.terminalVoltage.map(v=>v*1000));chart('probeChart',thermal.time,thermal.values,'Temperature · K');chart('voltageChart',electric.time,electric.values,'Voltage · mV');}
  else{$('probeChart').textContent=`Steady temperature: ${r.temperature[probe].toFixed(6)} K`;$('voltageChart').textContent=`Steady terminal voltage: ${r.terminalVoltage.toExponential(6)} V`;}
 }
 $('resultCanvas').onclick=e=>{if(!result||!resultFrame)return;const r=$('resultCanvas').getBoundingClientRect(),f=resultFrame,c=result.config,x=(e.clientX-r.left-f.left)/f.w,y=1-(e.clientY-r.top-f.top)/f.h;if(x<0||x>1||y<0||y>1)return;probe=Math.round(y*c.ny)*(c.nx+1)+Math.round(x*c.nx);drawResults();};
