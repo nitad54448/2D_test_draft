@@ -357,11 +357,11 @@ unrecognized numerical keys to GUI configuration expecting them to be used.
 Run:
 
 ```bash
-node --test tests/solver.test.cjs tests/worker.test.cjs tests/ui-helpers.test.cjs tests/validation.test.cjs tests/review.test.cjs
+node --test tests/solver.test.cjs tests/worker.test.cjs tests/ui-helpers.test.cjs tests/validation.test.cjs tests/review.test.cjs tests/exports.test.cjs
 ```
 
-All 58 automated tests passed on this package: 24 numerical tests, four packaging/
-worker checks, six precision/remeshing checks 20 input-validation checks and four review regression checks.
+All 62 automated tests passed on this package: 24 numerical tests, four packaging/
+worker checks, six precision/remeshing checks 20 input-validation checks four review regression checks and four export checks.
 They cover analytical 2D solutions, current spreading, circulating currents in
 open circuit, interface Peltier, Thomson, energy balances, mesh/time refinement,
 agreement with the corrected 1D solver, and rejection of invalid configurations.
@@ -387,3 +387,36 @@ Stopped-cycle plots show only sampled data, without a fabricated periodic closin
 point. Switching to DC/current magnitude preserves the selected harmonic display
 mode. Periodic JSON includes `cycleStartTime` in seconds; `time` remains relative
 to that cycle. The four new regression tests are in `tests/review.test.cjs`.
+
+## Full PDF report and complete results ZIP
+
+At the top of Results, click **Export**:
+
+- **Full PDF report** opens an offline print-ready report in a new tab. Click
+  **Save as PDF / Print**, then select **Save as PDF** in your browser. Use A4
+  portrait; browser headers/footers can be disabled. Allow pop-ups if prompted.
+- **Complete results ZIP** downloads the saved model, complete retained results
+  JSON, node/cell coordinates, all field histories and harmonics as CSV, terminal
+  data, standalone SVG figures, and the same report as `report.html`. The report
+  can be opened offline and saved as PDF later. The ZIP does not contain an
+  automatically generated PDF: PDF creation uses the browser print dialog.
+
+Periodic reports include DC and 1ω/2ω/3ω amplitude maps of temperature, voltage,
+Jx, Jy, qx, qy and current vector magnitude, plus phase maps of the component
+fields. They also include material properties, thermal/electrical boundaries,
+convergence status, geometry, terminal spectrum and the selected probe history.
+Steady reports contain DC results only. All exports use the computed result's
+model; pending inputs are never substituted. Provisional cycles are explicitly
+labelled unconverged in the report, JSON, manifest and terminal harmonic CSV.
+
+“Complete” means all retained solver data. Periodic exports contain the latest
+saved full cycle, not every startup cycle. JSON retains full numeric precision;
+report tables use readable rounding. SVG maps use cell averages for nodal fields.
+Each map has its own scale. Phase near zero magnitude may be numerical noise.
+
+The archive is a standard uncompressed ZIP for offline compatibility. Large
+meshes/time histories produce large downloads and require additional browser
+memory. CSV construction yields between batches so progress messages can repaint.
+No server, internet connection or third-party runtime package is required.
+
+`src/exports.js` owns report/SVG/CSV/ZIP creation independently of the live form.
