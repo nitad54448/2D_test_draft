@@ -16,6 +16,8 @@ TE.from2DConfig=c=>{
  if(c.mode==='steady'){const dc=v=>typeof v==='number'?v:v.bias??0;for(const b of Object.values(thermal))b.value=dc(b.value);electric.value=dc(electric.value);}
  return new TE.Solver2D(mesh,materials,thermal,electric);
 };
-TE.run2D=(c,progress)=>{const s=TE.from2DConfig(c),r=c.mode==='steady'?s.solveSteady():s.solvePeriodic(c.frequency,{samples:c.samples,maxPeriods:c.maxPeriods,onProgress:progress});
- return {...r,config:c,mesh:{nx:c.nx,ny:c.ny,lx:c.lx,ly:c.ly,depth:c.depth,x:s.mesh.x,y:s.mesh.y,materialMap:s.mesh.map},convention:'Peak phasors: u(t)=U0+Re(sum(Un exp(i n omega t))). Terminal voltage = V(sink)-V(source).'};};
+TE.run2D=(c,progress,checkpoint)=>{const s=TE.from2DConfig(c);
+ const decorate=r=>({...r,config:c,mesh:{nx:c.nx,ny:c.ny,lx:c.lx,ly:c.ly,depth:c.depth,x:s.mesh.x,y:s.mesh.y,materialMap:s.mesh.map},convention:'Peak phasors: u(t)=U0+Re(sum(Un exp(i n omega t))). Terminal voltage = V(sink)-V(source).'});
+ const r=c.mode==='steady'?s.solveSteady():s.solvePeriodic(c.frequency,{samples:c.samples,maxPeriods:c.maxPeriods,onProgress:progress,onCheckpoint:checkpoint?r=>checkpoint(decorate(r)):undefined});
+ return decorate(r);};
 })(globalThis.TE);

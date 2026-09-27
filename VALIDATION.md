@@ -1,6 +1,6 @@
 # Validation of the 2D conversion
 
-49 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
+50 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
 The tests use the same core source embedded in `index.html`.
 
 | Check | Acceptance |
@@ -86,7 +86,7 @@ npx playwright install chromium
 node tests/browser.spec.cjs
 ```
 
-That browser test is not counted among the 49 passed tests. It covers tab switching,
+That browser test is not counted among the 50 passed tests. It covers tab switching,
 a Seebeck run, a nonlinear harmonic run, result export, cancellation, page errors
 and a narrow viewport.
 
@@ -128,3 +128,11 @@ The form now highlights invalid inputs and blocks Apply, Run and Export. The
 optional browser test includes depth and conductivity rejection/recovery checks;
 these browser interaction checks have not been executed here. Numerical/schema
 checks and embedded-worker tests are executed, not inferred from HTML attributes.
+
+## Progress and retained results
+
+The full 50-test suite passes after adding worker checkpoints. The new worker test
+receives step progress and a full first-cycle result, terminates the worker, and
+checks retained fields, harmonics, configuration and `converged: false`. Existing
+analytical/convergence tests still pass. Browser layout and live timer interactions
+remain unverified in an actual browser in this environment.

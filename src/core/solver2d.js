@@ -87,26 +87,30 @@ class Solver2D {
   const T=this.implicit(0,null,0,{...options,initial:this.initial(options.T0)});
   return {...this.snapshot(T,0,true),method:'steady',converged:true};
  }
- solvePeriodic(frequency,{samples=128,maxPeriods=100,minPeriods=3,periodicAtol=2e-7,periodicRtol=1e-10,tolerance=2e-9,T0,onProgress=()=>{}}={}){
+ solvePeriodic(frequency,{samples=128,maxPeriods=100,minPeriods=3,periodicAtol=2e-7,periodicRtol=1e-10,tolerance=2e-9,T0,onProgress=()=>{},onCheckpoint}={}){
   TE.assert(Number.isFinite(frequency)&&frequency>0,'Frequency must be positive.');TE.assert(Number.isInteger(samples)&&samples>=32&&samples<=2048,'Use 32–2048 integer steps per period.');
   TE.assert(Number.isInteger(maxPeriods)&&maxPeriods<=1000&&Number.isInteger(minPeriods)&&maxPeriods>=minPeriods&&minPeriods>=2,'Invalid cycle limit.');
   TE.assert([periodicAtol,periodicRtol,tolerance].every(v=>Number.isFinite(v)&&v>0),'Solver tolerances must be strictly positive and finite.');
   TE.assert(Number.isFinite(1/(frequency*samples))&&1/(frequency*samples)>0,'Unrepresentable time step.');
   this.frequency=frequency;let T=this.initial(T0),older=null,previous=null,history,cycle,error=Infinity;const dt=1/(frequency*samples);
+  const packageCycle=converged=>{
+   const traces={},records=history.map((row,i)=>this.snapshot(row,((cycle-1)*samples+i)*dt));
+   for(const key of ['temperature','voltage','Jx','Jy','qx','qy','current','terminalVoltage'])traces[key]=records.map(r=>r[key]);
+   const harmonics={};for(const [key,value]of Object.entries(traces))harmonics[key]=TE.extractHarmonics(value,3);
+   return {...traces,harmonics,time:Array.from({length:samples},(_,i)=>i*dt),frequency,samples,periods:cycle,periodicError:Number.isFinite(error)?error:null,finalTemperature:[...T],method:'BDF2 / nonlinear Picard / matrix-free CG',converged};
+  };
   for(cycle=1;cycle<=maxPeriods;cycle++){
    history=[];
    for(let j=0;j<samples;j++){
     history.push([...T]);const target=T.map((v,i)=>older?4*v/3-older[i]/3:v),gamma=older?2/3:1;
     const next=this.implicit(((cycle-1)*samples+j+1)*dt,target,gamma*dt,{initial:T,tolerance});older=T;T=next;
+    if(j%Math.max(1,Math.floor(samples/20))===0||j===samples-1)onProgress({cycle,maxPeriods,step:j+1,samples,error:Number.isFinite(error)?error:null});
    }
    if(previous){error=0;history.forEach((row,j)=>row.forEach((v,i)=>error=Math.max(error,Math.abs(v-previous[j][i])/(periodicAtol+periodicRtol*Math.max(Math.abs(v),Math.abs(previous[j][i]))))));}
-   onProgress({cycle,maxPeriods,error:Number.isFinite(error)?error:null});if(cycle>=minPeriods&&error<=1)break;previous=history;
+   onProgress({cycle,maxPeriods,step:samples,samples,error:Number.isFinite(error)?error:null});if(cycle>=minPeriods&&error<=1)break;if(onCheckpoint)onCheckpoint(packageCycle(false));previous=history;
   }
   TE.assert(cycle<=maxPeriods,`Periodic state not reached in ${maxPeriods} cycles (error ${error.toExponential(2)}).`);
-  const traces={},records=history.map((T,i)=>this.snapshot(T,((cycle-1)*samples+i)*dt));
-  for(const key of ['temperature','voltage','Jx','Jy','qx','qy','current','terminalVoltage'])traces[key]=records.map(r=>r[key]);
-  const harmonics={};for(const [key,value]of Object.entries(traces))harmonics[key]=TE.extractHarmonics(value,3);
-  return {...traces,harmonics,time:Array.from({length:samples},(_,i)=>i*dt),frequency,samples,periods:cycle,periodicError:error,finalTemperature:T,method:'BDF2 / nonlinear Picard / matrix-free CG',converged:true};
+  return packageCycle(true);
  }
 }
 TE.Solver2D=Solver2D;

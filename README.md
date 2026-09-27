@@ -241,6 +241,18 @@ increase with cell count, time samples, nonlinear iterations and cycles. The wor
 keeps the page responsive; Stop terminates the calculation. No result is marked
 converged after a solver failure.
 
+Elapsed wall time updates independently every 0.1 s in the browser. Periodic runs
+report steps within each cycle and show the fraction of the cycle budget used;
+this is not a predicted completion percentage, since convergence can finish early.
+The existing Web Worker keeps computation off the UI thread.
+
+Stop retains the latest complete periodic cycle, or the previous result if no
+complete cycle exists. Provisional cycles are labelled unconverged, and their
+harmonics need not represent a settled periodic response. JSON and CSV exports
+include convergence status. Steady runs retain the previous result when stopped;
+unfinished nonlinear iterates are not exported. Completed-cycle checkpoints add
+some computation and message-transfer overhead.
+
 ## Harmonics and field display
 
 ```
@@ -344,7 +356,7 @@ Run:
 node --test tests/solver.test.cjs tests/worker.test.cjs tests/ui-helpers.test.cjs tests/validation.test.cjs
 ```
 
-All 49 automated tests passed on this package: 21 numerical tests, three packaging/
+All 50 automated tests passed on this package: 21 numerical tests, four packaging/
 worker checks, five precision/remeshing checks and 20 input-validation checks.
 They cover analytical 2D solutions, current spreading, circulating currents in
 open circuit, interface Peltier, Thomson, energy balances, mesh/time refinement,
