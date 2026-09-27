@@ -187,3 +187,36 @@ unreproduced. As a compatibility workaround, separate-scripts-2 moves executing
 JavaScript out of HTML into four local assets and preserves the first startup
 error visibly. All nine packaging/worker/export checks pass for this build.
 No solver equations were changed. This is not a claim of verified browser repair.
+
+## DC / spatial-profile update
+
+The numerical solver is unchanged. Three new profile regression tests pass:
+analytical 1D DC temperature/voltage, exact time-sample and Y-cut indexing, and
+cell-center instantaneous vector magnitude. The 12 profile/packaging/worker/export
+checks passed after rebuilding; see profile-validation.txt. UI additions include
+synchronized DC selection, a DC preset, spatial cuts and sample selection, and
+an expandable guide documenting the implemented equations. Browser interactions
+are not claimed as tested.
+
+## DC controls, shared equation report and mesh feedback
+
+Selecting DC now zeros and disables electrical AC peak/phase and thermal AC
+amplitudes. Returning to harmonic mode keeps zero until the user enters a new
+excitation. The detailed equation guide lives in src/equations.js and is shared
+by the Solver view and two always-included report pages (PDF and ZIP report.html).
+Apply mesh is disabled when geometry matches the applied mesh. A valid pending
+geometry edit triggers one brief highlight and enables the button; applying it
+clears the pending state. Invalid inputs and running calculations keep it disabled.
+Reduced-motion preferences suppress animation while keeping the active highlight.
+
+13 targeted DC-control/profile/export/worker checks passed (minor-validation.txt).
+The new report equation pages were rendered and visually inspected. Browser
+animation/interaction testing is not claimed.
+
+## Automatic mode selection
+
+14 targeted checks pass after removing the duplicate selector. Tests exercise
+stationary/periodic visibility, electrical DC zeroing without thermal AC loss,
+thermal-only periodic forcing, open-circuit drive suppression and h=0 convection.
+The source UI functions are tested with controlled form elements, not a real
+browser. All local script assets are compiled and worker/export checks pass.

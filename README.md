@@ -431,3 +431,61 @@ A red startup message preserves the first failure, its source file/line and brow
 identity. If startup still fails, send this message and the browser/version.
 The uploaded failing file matched the prior generated build byte-for-byte and
 passed JavaScript parsing checks; the browser-specific failure is not yet reproduced.
+
+## DC excitation, instantaneous spatial profiles and equation guide
+
+In Boundaries, select **DC · stationary** under Excitation, then set the constant
+current or voltage in **DC bias**. The Solver method is inferred automatically from active electrical and thermal inputs. AC peak,
+phase and time integration settings are ignored in DC. The new **DC · Joule
+heating / spatial profile** preset provides a one-row example with a 0.2 A drive.
+This is a stationary DC solution, not a DC switch-on transient.
+
+Results now includes **Spatial profile · DC or selected time**. Choose temperature,
+voltage, current components/magnitude or heat flux, X/Y direction and transverse
+cut position. The cut snaps to the nearest nodal line (T/V) or cell centers (J/q),
+with its actual position shown. In periodic runs, the time slider selects a stored
+sample of the last saved complete cycle, including all resolved harmonics. It
+shows time, phase and sample number. **Profile CSV** exports the displayed cut,
+SI coordinates, units, time and convergence status. The existing full-results ZIP
+already contains all data from which these profiles are extracted; the report
+continues to show its existing full harmonic maps and probe plots.
+
+Solver includes an expandable **Detailed equations, boundary conditions and
+numerical method** guide: constitutive laws, charge/energy conservation, Joule,
+Peltier/Thomson coupling, interface and boundary conditions, DC/phasor conventions,
+and the actual finite-volume link/BDF2/Picard discretization used in this code.
+
+Profile regressions: `node --test tests/profiles.test.cjs`. Three new tests verify
+analytical DC Seebeck profiles, sample/axis indexing and instantaneous vector
+magnitude at cell centers. Together with worker/export checks, 12 focused checks
+passed (`profile-validation.txt`). Browser interaction testing is still pending.
+
+## DC controls, shared equation report and mesh feedback
+
+Selecting electrical DC zeros and disables electrical AC peak/phase. Thermal AC remains independent. Returning to harmonic mode keeps zero until the user enters a new
+excitation. The detailed equation guide lives in src/equations.js and is shared
+by the Solver view and two always-included report pages (PDF and ZIP report.html).
+Apply mesh is disabled when geometry matches the applied mesh. A valid pending
+geometry edit triggers one brief highlight and enables the button; applying it
+clears the pending state. Invalid inputs and running calculations keep it disabled.
+Reduced-motion preferences suppress animation while keeping the active highlight.
+
+13 targeted DC-control/profile/export/worker checks passed (minor-validation.txt).
+The new report equation pages were rendered and visually inspected. Browser
+animation/interaction testing is not claimed.
+
+## Automatic Solver UI
+
+There is no second mode selector in Solver. With constant active inputs it displays
+**DC stationary**, without frequency, step count or cycle budget. Nonzero active
+AC electrical excitation or thermal forcing selects **Periodic** and reveals
+exactly those three controls. The equation guide is available in both cases.
+Choosing electrical DC does not erase thermal AC. Open-circuit electrical AC values
+and ambient AC with h=0 do not activate periodic solving. Selecting AC electrical
+input with amplitude zero still gives a stationary solution until active AC is set.
+The derived mode is written into exported configurations and used when running.
+Hidden periodic settings do not block DC validation. The programmatic solver API
+continues to honor explicit configuration mode; automatic selection is a UI feature.
+
+14 targeted controls/profile/worker/export tests pass; see
+`automatic-solver-validation.txt`. Full browser interaction testing remains pending.

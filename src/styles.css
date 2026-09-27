@@ -5,3 +5,7 @@
 .validation-summary{border:1px solid #a8585e;border-radius:8px;background:#2c1921;color:#ffd0cc;padding:14px 18px;margin:0 0 20px;font-size:11px}.validation-summary strong{font-weight:550}.validation-summary ul{margin:8px 0 0;padding-left:18px}.validation-summary li{margin:4px 0}input[aria-invalid="true"],select[aria-invalid="true"]{border-color:#ff8e8a;background:#2a1b23;box-shadow:0 0 0 1px #ff8e8a44}
 
 #exportMenu{padding:10px 0;display:flex;gap:8px;flex-wrap:wrap}#exportMenu[hidden]{display:none}#exportStatus{font-size:12px;color:var(--muted);min-height:16px}
+
+#applyGrid.mesh-pending{border-color:var(--accent);color:var(--accent)}#applyGrid.mesh-flash{animation:mesh-flash .7s ease-out 1}@keyframes mesh-flash{0%,100%{box-shadow:0 0 0 0 transparent}45%{background:#665039;box-shadow:0 0 0 5px #f0ad7244}}@media(prefers-reduced-motion:reduce){#applyGrid.mesh-flash{animation:none}}
+
+.solver-method{color:var(--teal);font-size:22px;margin:20px 0;font-weight:550}

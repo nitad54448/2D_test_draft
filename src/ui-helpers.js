@@ -32,3 +32,26 @@
   return next;
  };
 })(globalThis.TE);
+(function(TE){
+ TE.spatialProfile=(r,{field='temperature',axis='x',position=.5,sample=0}={})=>{
+  TE.assert(['temperature','voltage','Jx','Jy','qx','qy','J'].includes(field),'Unknown profile field.');
+  TE.assert(['x','y'].includes(axis)&&Number.isFinite(position)&&position>=0&&position<=1,'Invalid profile cut.');
+  const periodic=r.method!=='steady',count=periodic?r.samples:1;
+  TE.assert(Number.isInteger(sample)&&sample>=0&&sample<count,'Invalid time sample.');
+  const c=r.config,nodal=['temperature','voltage'].includes(field),get=k=>periodic?r[k][sample]:r[k];
+  const data=field==='J'?get('Jx').map((v,i)=>Math.hypot(v,get('Jy')[i])):get(field);
+  const cols=c.nx+(nodal?1:0),rows=c.ny+(nodal?1:0),transverse=axis==='x'?rows:cols;
+  const line=Math.max(0,Math.min(transverse-1,Math.round(position*(axis==='x'?c.ny:c.nx)-(nodal?0:.5))));
+  const length=axis==='x'?cols:rows,x=[],values=[];
+  for(let k=0;k<length;k++){x.push((k+(nodal?0:.5))*(axis==='x'?c.lx/c.nx:c.ly/c.ny));values.push(data[axis==='x'?line*cols+k:k*cols+line]);}
+  return {x,values,axis,field,sample,time:periodic?r.time[sample]:0,absoluteTime:periodic?(r.cycleStartTime??0)+r.time[sample]:0,line,transverseCoordinate:(line+(nodal?0:.5))*(axis==='x'?c.ly/c.ny:c.lx/c.nx),unit:field==='temperature'?'K':field==='voltage'?'V':['qx','qy'].includes(field)?'W/m²':'A/m²'};
+ };
+})(globalThis.TE);
+(function(TE){
+ TE.inferSimulationMode=c=>{
+  const ac=v=>typeof v==='object'&&v!==null&&Number.isFinite(v.amplitude)&&v.amplitude!==0;
+  if(c.electrical.kind!=='open_circuit'&&ac(c.electrical.value))return 'periodic';
+  if(Object.values(c.thermal).some(b=>ac(b.value)&&(b.kind!=='convection'||b.h>0)))return 'periodic';
+  return 'steady';
+ };
+})(globalThis.TE);

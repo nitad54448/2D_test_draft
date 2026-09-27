@@ -407,3 +407,29 @@ TE.run2D=(c,progress,checkpoint)=>{const s=TE.from2DConfig(c);
   return next;
  };
 })(globalThis.TE);
+(function(TE){
+ TE.spatialProfile=(r,{field='temperature',axis='x',position=.5,sample=0}={})=>{
+  TE.assert(['temperature','voltage','Jx','Jy','qx','qy','J'].includes(field),'Unknown profile field.');
+  TE.assert(['x','y'].includes(axis)&&Number.isFinite(position)&&position>=0&&position<=1,'Invalid profile cut.');
+  const periodic=r.method!=='steady',count=periodic?r.samples:1;
+  TE.assert(Number.isInteger(sample)&&sample>=0&&sample<count,'Invalid time sample.');
+  const c=r.config,nodal=['temperature','voltage'].includes(field),get=k=>periodic?r[k][sample]:r[k];
+  const data=field==='J'?get('Jx').map((v,i)=>Math.hypot(v,get('Jy')[i])):get(field);
+  const cols=c.nx+(nodal?1:0),rows=c.ny+(nodal?1:0),transverse=axis==='x'?rows:cols;
+  const line=Math.max(0,Math.min(transverse-1,Math.round(position*(axis==='x'?c.ny:c.nx)-(nodal?0:.5))));
+  const length=axis==='x'?cols:rows,x=[],values=[];
+  for(let k=0;k<length;k++){x.push((k+(nodal?0:.5))*(axis==='x'?c.lx/c.nx:c.ly/c.ny));values.push(data[axis==='x'?line*cols+k:k*cols+line]);}
+  return {x,values,axis,field,sample,time:periodic?r.time[sample]:0,absoluteTime:periodic?(r.cycleStartTime??0)+r.time[sample]:0,line,transverseCoordinate:(line+(nodal?0:.5))*(axis==='x'?c.ly/c.ny:c.lx/c.nx),unit:field==='temperature'?'K':field==='voltage'?'V':['qx','qy'].includes(field)?'W/m²':'A/m²'};
+ };
+})(globalThis.TE);
+(function(TE){
+ TE.inferSimulationMode=c=>{
+  const ac=v=>typeof v==='object'&&v!==null&&Number.isFinite(v.amplitude)&&v.amplitude!==0;
+  if(c.electrical.kind!=='open_circuit'&&ac(c.electrical.value))return 'periodic';
+  if(Object.values(c.thermal).some(b=>ac(b.value)&&(b.kind!=='convection'||b.h>0)))return 'periodic';
+  return 'steady';
+ };
+})(globalThis.TE);
+
+/* Shared text for the interface and printed report. */
+(function(TE){TE.equationGuide=[{"title": "Governing equations and boundaries", "html": "<h3>Unknown fields and constitutive laws</h3><p>T(x,y,t) is absolute temperature (K), V(x,y,t) electric potential (V). The local material defines σ(T), k(T), α(T), density ρ(T), and Cp(T). J is electric current density; q is total heat flux.</p><p>J = −σ(T)[∇V + α(T)∇T]<br>∇·J = 0<br>q = α(T)TJ − k(T)∇T<br>ρCp ∂T/∂t = −∇·q − J·∇V</p><h3>Thermoelectric coupling</h3><p>Within a smooth homogeneous material, these equations give:<br>ρCp ∂T/∂t = ∇·(k∇T) + |J|²/σ − T(dα/dT)J·∇T.<br>The last two terms are Joule and Thomson heating. Π = αT is the Peltier coefficient; discontinuities in α produce interface Peltier transport through q. These effects are already included in total flux and must not be added a second time.</p><h3>Boundary and interface conditions</h3><p>Electrical contacts are equipotential. V(source) = 0. Voltage mode prescribes V(sink); current mode sets total current entering the source; open circuit imposes zero net contact current. Other edges satisfy J·n = 0. Thermal edges prescribe T, q·n = qout, or q·n = h(T − Tambient), where n is the outward normal. Zero total flux includes Peltier transport. Ideal interfaces have continuous T, V, normal J and total normal q; contact resistance is absent.</p>"}, {"title": "Excitation and numerical method", "html": "<h3>DC and harmonic excitation</h3><p>DC solves the stationary system with ∂T/∂t = 0, using only DC biases. Periodic inputs use b + A cos(2πft + φ); φ is in degrees in the editor. The nonlinear time-domain solution generates harmonics:<br>u(t) = U₀ + Re[Σ Uₙ exp(inωt)], n = 1,2,3.<br>Coefficients are peak phasors, not RMS. Instantaneous spatial profiles use stored time samples, including all resolved harmonics; they are not reconstructed from only 1ω–3ω.</p><h3>Discretization and iteration</h3><p>Each rectangular cell contributes four half-face links. For a link a→b of length L and half-face area A:<br>g = A/[L mean(ρₑ(Ta),ρₑ(Tb))]<br>Iab = g[Va − Vb − αmean(Tb − Ta)]<br>Qab = αmean(Ta + Tb)Iab/2 − kmean A(Tb − Ta)/L.<br>Electrical work Iab(Va − Vb) is shared between the two nodes. Cell heat capacity is split among its four corners. Coupled equations are iterated with damped Picard; linear graph systems use preconditioned conjugate gradients. BDF2 advances periodic runs after one backward-Euler startup step. Cycle convergence is assessed from successive temperature histories.</p><p>Ly × depth gives the cross-section of a 1D reduction. Ny = 1, full left/right contacts and zero top/bottom flux produce the transverse-uniform limit. Grid/time refinement remains necessary, especially for weak 3ω. The model assumes isotropic properties, perfect interfaces and no front/back heat losses.</p>"}];})(globalThis.TE);
