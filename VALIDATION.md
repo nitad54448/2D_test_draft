@@ -1,6 +1,6 @@
 # Validation of the 2D conversion
 
-58 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
+62 automated tests passed under Node.js v24.19.0. The raw run is in `validation.txt`.
 The tests use the same core source embedded in `index.html`.
 
 | Check | Acceptance |
@@ -86,7 +86,7 @@ npx playwright install chromium
 node tests/browser.spec.cjs
 ```
 
-That browser test is not counted among the 58 passed tests. It covers tab switching,
+That browser test is not counted among the 62 passed tests. It covers tab switching,
 a Seebeck run, a nonlinear harmonic run, result export, cancellation, page errors
 and a narrow viewport.
 
@@ -156,3 +156,34 @@ Seebeck voltage, a Peltier material interface, and nonlinear DC/1ω/2ω/3ω agre
 with the independent 1D reference. All 58 tests pass. The one-row reduction uses
 full left/right contacts and adiabatic top/bottom boundaries. Ly and depth still
 set the positive physical cross-section; this is not a zero-height mesh.
+
+## Full report and results archive
+
+Four additional automated checks cover periodic/steady report contents, escaped
+material names, field/history CSV row counts, lossless JSON, UTF-8 ZIP names,
+binary/empty ZIP entries, ZIP headers and CRC. All 62 tests pass. A real periodic
+sample produced a 70-entry archive; Python zipfile verified every CRC and the
+model/results round trip. Its HTML report rendered to 16 A4 pages with WeasyPrint
+for print-layout inspection. This verifies document rendering, not the browser's
+popup/print/download interaction, which remains unexecuted in this environment.
+
+## Reported startup syntax error
+
+The reported error was not reproduced in the retained ZIP: its scripts parsed
+correctly, and its line numbers differed from the failing file. The build now
+compiles each source and each final inline script, escapes HTML-sensitive script
+sequences, and executes the first script to verify TE initialization before writing
+the output. All nine startup/worker/export checks passed. An independent HTML5
+parser also extracted three complete scripts, each accepted by the JS parser.
+Browser installation was blocked by truncated download responses; actual browser
+startup remains unverified. Build marker: export-startup-check-1.
+
+## Exact uploaded-file investigation
+
+The attached index(5).html was byte-identical to export-startup-check-1 (SHA-256
+5fad1b6960145c45493ad19c67f024b3259a726551b6b4a15d68e440fea88d4c).
+All three extracted scripts compiled; the original browser failure remains
+unreproduced. As a compatibility workaround, separate-scripts-2 moves executing
+JavaScript out of HTML into four local assets and preserves the first startup
+error visibly. All nine packaging/worker/export checks pass for this build.
+No solver equations were changed. This is not a claim of verified browser repair.
